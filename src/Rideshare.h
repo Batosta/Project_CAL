@@ -9,6 +9,7 @@
 #include <set>
 #include <unordered_set>
 #include <queue>
+#include <math.h>
 
 #include "Travel.h"
 #include "Client.h"
@@ -29,6 +30,7 @@ public:
 
 	bool existsClientID(int clientID);
 	bool existsTravelID(int travelID);
+	bool existsNodeID(int nodeID);
 
 	void setClients(std::vector<Client *> clients);
 	void setTravels(std::vector<Travel *> travels);
@@ -36,8 +38,7 @@ public:
 	void addClient(Client * newClient);
 	void addTravel(Travel * newTravel);
 	void addNode(int ID, int x, int y);
-	void addEdge(int originID, int destID, double w, int direction);
-
+	void addEdge(int originID, int destID, int direction);
 
 	bool removeClient(int uniqueID);
 	bool removeTravel(int uniqueID);
@@ -45,6 +46,7 @@ public:
 	std::string showAllClients();
 	std::string showAllTravels();
 	void showAllNodes();
+	void showFastestRoute(int source, int dest);
 
 private:
 

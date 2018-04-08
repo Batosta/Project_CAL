@@ -193,7 +193,7 @@ public:
 	vector<Vertex<T> *> getVertexSet() const;
 	bool addVertex(const T &in, int xCoordinate, int yCoordinate);
 	bool removeVertex(const T &in);
-	bool addEdge(const T &sourc, const T &dest, double w);
+	bool addEdge(const T &sourc, const T &dest);
 	bool removeEdge(const T &sourc, const T &dest);
 	bool isDAG() const;
 
@@ -205,6 +205,8 @@ public:
 	int maxNewChildren(const T &source, T &inf) const;
 	void unweightedShortestPath(const T &orig);
 	void dijkstraShortestPath(const T &origin);
+
+	int calculateEdgeWeight(const T &sourc, const T &dest);
 };
 
 template<class T>
@@ -250,16 +252,30 @@ bool Graph<T>::addVertex(const T &in, int xCoordinate, int yCoordinate) {
 }
 
 template<class T>
-bool Graph<T>::addEdge(const T &sourc, const T &dest, double w) {
+bool Graph<T>::addEdge(const T &sourc, const T &dest) {
 
+	int w = calculateEdgeWeight(sourc, dest);
 	auto vs = findVertex(sourc);
 	auto vd = findVertex(dest);
+
 
 	if (vs == NULL || vd == NULL)
 		return false;
 
 	vs->addEdge(vd, w);
 	return true;
+}
+
+template<class T>
+int Graph<T>::calculateEdgeWeight(const T &sourc, const T &dest){
+
+	double w = 0;
+	auto vs = findVertex(sourc);
+	auto vd = findVertex(dest);
+
+	w = pow(vd->getXCoordinate() - vs->getXCoordinate(), 2);
+	w += pow(vd->getYCoordinate() - vs->getYCoordinate(), 2);
+	return round(sqrt(w));
 }
 
 template<class T>

@@ -14,6 +14,8 @@ void readNodesFile();
 void readEdgesFile();
 
 void seeAllSomething(std::string str);
+void findFastestRoute();
+void findFastestRouteThroughPoints();
 
 void createNewClient();
 void createNewTravel();
@@ -22,7 +24,6 @@ void deleteClient();
 void deleteTravel();
 
 bool is_number(const std::string & s);
-
 void openMap();
 
 #endif /* FUNCTIONS_H_ */

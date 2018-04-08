@@ -86,8 +86,6 @@ void readEdgesFile() {
 		string roadName;
 		char garbage;
 
-		double weight = 0;
-
 		infoEdge >> roadID;
 		infoEdge >> garbage;
 
@@ -101,16 +99,15 @@ void readEdgesFile() {
 
 		getline(infoEdge, roadName, ';');
 
-
 		//										0 = UNDIRECTED			1 = DIRECTED
 		if (directions == "true") {
 
-			rideShare->addEdge(nodeID2, nodeID1, weight, 0);
-			gv->addEdge(roadID, nodeID1, nodeID2, 0);
+			rideShare->addEdge(nodeID2, nodeID1, EdgeType::UNDIRECTED);
+			gv->addEdge(roadID, nodeID1, nodeID2, EdgeType::UNDIRECTED);
 		} else {
 
-			rideShare->addEdge(nodeID1, nodeID2, weight, 1);
-			gv->addEdge(roadID, nodeID1, nodeID2, 1);
+			rideShare->addEdge(nodeID1, nodeID2, EdgeType::DIRECTED);
+			gv->addEdge(roadID, nodeID1, nodeID2, EdgeType::DIRECTED);
 		}
 
 		gv->setEdgeLabel(roadID, roadName);
@@ -149,6 +146,128 @@ void seeAllSomething(string str) {
 	}
 
 	cout << output;
+}
+
+void findFastestRoute() {
+
+	string tempID;
+	int sourceID, destID;
+
+	cout << endl << endl;
+	cout << "-----------" << endl;
+	cout << "RideSharing" << endl;
+	cout << "-----------" << endl;
+	cout << endl << endl;
+	cin.clear();
+	cin.ignore(10000, '\n');
+
+	cout << "Insert the ID of the source node: ";
+	getline(cin, tempID);
+	if (!is_number(tempID)) {
+		cout << "Not an integer.\n" << endl;
+		return;
+	}
+	sourceID = stoi(tempID);
+	if (!rideShare->existsNodeID(sourceID)) {
+		cout << "\nThere is no Node with the ID: " << sourceID << endl;
+		return;
+	}
+
+	cout << "Insert the ID of the destiny node: ";
+	getline(cin, tempID);
+	if (!is_number(tempID)) {
+		cout << "Not an integer.\n" << endl;
+		return;
+	}
+	destID = stoi(tempID);
+	if (destID == sourceID) {
+		cout << "\nThe source and destiny ID can not be the same. " << endl;
+		return;
+	}
+	if (!rideShare->existsNodeID(destID)) {
+		cout << "\nThere is no Node with the ID: " << destID << endl;
+		return;
+	}
+
+	rideShare->showFastestRoute(sourceID, destID);
+}
+
+void findFastestRouteThroughPoints() {
+
+	string tempNumber;
+	int sourceID, destID, numberPoints, middlePointID;
+	vector<int> middlePoints;
+
+	cout << endl << endl;
+	cout << "-----------" << endl;
+	cout << "RideSharing" << endl;
+	cout << "-----------" << endl;
+	cout << endl << endl;
+	cin.clear();
+	cin.ignore(10000, '\n');
+
+	cout << "Insert the ID of the source node: ";
+	getline(cin, tempNumber);
+	if (!is_number(tempNumber)) {
+		cout << "Not an integer.\n" << endl;
+		return;
+	}
+	sourceID = stoi(tempNumber);
+	if (!rideShare->existsNodeID(sourceID)) {
+		cout << "\nThere is no Node with the ID: " << sourceID << endl;
+		return;
+	}
+	middlePoints.push_back(sourceID);
+
+	cout << "Insert the number of middle points: ";
+	getline(cin, tempNumber);
+	if (!is_number(tempNumber)) {
+		cout << "Not an integer.\n" << endl;
+		return;
+	}
+	numberPoints = stoi(tempNumber);
+	if (numberPoints <= 0 || numberPoints > 5) {
+		cout << "\nThe number must be above 0 and below 5";
+		return;
+	}
+	for (int i = 0; i < numberPoints; i++) {
+
+		cout << "Insert the ID of the next node: ";
+		getline(cin, tempNumber);
+		if (!is_number(tempNumber)) {
+			cout << "Not an integer.\n" << endl;
+			return;
+		}
+		middlePointID = stoi(tempNumber);
+		if (!rideShare->existsNodeID(middlePointID)) {
+			cout << "\nThere is no Node with the ID: " << middlePointID << endl;
+			return;
+		}
+		middlePoints.push_back(middlePointID);
+	}
+
+	cout << "Insert the ID of the destiny node: ";
+	getline(cin, tempNumber);
+	if (!is_number(tempNumber)) {
+		cout << "Not an integer.\n" << endl;
+		return;
+	}
+	destID = stoi(tempNumber);
+	if (destID == sourceID) {
+		cout << "\nThe source and destiny ID can not be the same. " << endl;
+		return;
+	}
+	if (!rideShare->existsNodeID(destID)) {
+		cout << "\nThere is no Node with the ID: " << destID << endl;
+		return;
+	}
+	middlePoints.push_back(destID);
+
+
+	for(size_t t = 0; t < middlePoints.size() - 1; t++){
+
+		rideShare->showFastestRoute(middlePoints.at(t), middlePoints.at(t+1));
+	}
 }
 
 void createNewClient() {
@@ -298,6 +417,6 @@ void openMap() {
 	gv->defineVertexColor("blue");
 	gv->defineEdgeColor("black");
 	gv->setBackground("docs/vilareal.png");
-	gv->defineEdgeCurved(true);
+	gv->defineEdgeCurved(false);
 	gv->createWindow(767, 792);
 }

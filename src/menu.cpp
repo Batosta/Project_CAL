@@ -149,13 +149,15 @@ void graphMenu() {
 	cout << endl;
 	cout << " 1 - See All Nodes" << endl;
 	cout << " 2 - Open Map" << endl;
-	cout << " 2 - Return" << endl;
-	cout << " 3 - Exit" << endl;
+	cout << " 3 - Find fastest route" << endl;
+	cout << " 4 - Find fastest route going through some points" << endl;
+	cout << " 5 - Return" << endl;
+	cout << " 6 - Exit" << endl;
 
 	int opcao = 0;
 	cout << endl;
 	cout << "Choose an option: ";
-	while (opcao < 1 || opcao > 4) {
+	while (opcao < 1 || opcao > 6) {
 		if (cin >> opcao) {
 
 			switch (opcao) {
@@ -167,9 +169,17 @@ void graphMenu() {
 				openMap();
 				break;
 			case 3:
-				mainMenu();
+				findFastestRoute();
+				goBack();
 				break;
 			case 4:
+				findFastestRouteThroughPoints();
+				goBack();
+				break;
+			case 5:
+				mainMenu();
+				break;
+			case 6:
 				leave();
 				break;
 			default:
