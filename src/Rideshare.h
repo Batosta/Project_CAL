@@ -13,8 +13,8 @@
 
 #include "Travel.h"
 #include "Client.h"
+#include "Request.h"
 #include "Graph.h"
-
 
 class RideShare {
 
@@ -25,6 +25,7 @@ public:
 
 	std::vector<Client *> getClients() const;
 	std::vector<Travel *> getTravels() const;
+	Graph<int> getGraph() const;
 	Client * getClientByID(int clientID);
 	Travel * getTravelByID(int travelID);
 
@@ -37,21 +38,27 @@ public:
 
 	void addClient(Client * newClient);
 	void addTravel(Travel * newTravel);
+	void addRequest(Request * newRequest);
 	void addNode(int ID, int x, int y);
 	void addEdge(int originID, int destID, int direction);
 
 	bool removeClient(int uniqueID);
 	bool removeTravel(int uniqueID);
+	bool removeRequest(int uniqueID);
 
 	std::string showAllClients();
 	std::string showAllTravels();
 	void showAllNodes();
-	void showFastestRoute(int source, int dest);
+	std::string showAllRequests();
+	vector<int> getFastestRoute(int source, int dest);
+	int getDistanceRoute(int source, int dest);
+	int getSimpleTimeRoute(int source, int dest);
 
 private:
 
 	std::vector<Client *> allClients;
 	std::vector<Travel *> allTravels;
+	std::vector<Request *> allRequests;
 	Graph<int> graph;
 };
 

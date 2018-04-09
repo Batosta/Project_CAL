@@ -17,6 +17,7 @@ public:
 
 	std::string getName() const;
 	int getUniqueClientID() const;
+	std::string getPhoneNumber() const;
 
 	void setName(std::string name);
 

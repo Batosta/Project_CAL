@@ -69,7 +69,7 @@ void clientsMenu() {
 				goBack();
 				break;
 			case 2:
-				deleteClient();
+				deleteSomething(1);
 				goBack();
 				break;
 			case 3:
@@ -102,13 +102,16 @@ void travelsMenu() {
 	cout << " 1 - Create new Travel" << endl;
 	cout << " 2 - Remove Travel" << endl;
 	cout << " 3 - See All Travels" << endl;
-	cout << " 4 - Return" << endl;
-	cout << " 5 - Exit" << endl;
+	cout << " 4 - Create a new Request" << endl;
+	cout << " 5 - Remove Request" << endl;
+	cout << " 6 - See All Requests" << endl;
+	cout << " 7 - Return" << endl;
+	cout << " 8 - Exit" << endl;
 
 	int opcao = 0;
 	cout << endl;
 	cout << "Choose an option: ";
-	while (opcao < 1 || opcao > 5) {
+	while (opcao < 1 || opcao > 8) {
 		if (cin >> opcao) {
 
 			switch (opcao) {
@@ -117,7 +120,7 @@ void travelsMenu() {
 				goBack();
 				break;
 			case 2:
-				deleteTravel();
+				deleteSomething(2);
 				goBack();
 				break;
 			case 3:
@@ -125,9 +128,21 @@ void travelsMenu() {
 				goBack();
 				break;
 			case 4:
-				mainMenu();
+				createNewRequest();
+				goBack();
 				break;
 			case 5:
+				deleteSomething(3);
+				goBack();
+				break;
+			case 6:
+				seeAllSomething("requests");
+				goBack();
+				break;
+			case 7:
+				mainMenu();
+				break;
+			case 8:
 				leave();
 				break;
 			default:
@@ -148,16 +163,15 @@ void graphMenu() {
 	cout << "-----------" << endl;
 	cout << endl;
 	cout << " 1 - See All Nodes" << endl;
-	cout << " 2 - Open Map" << endl;
-	cout << " 3 - Find fastest route" << endl;
-	cout << " 4 - Find fastest route going through some points" << endl;
-	cout << " 5 - Return" << endl;
-	cout << " 6 - Exit" << endl;
+	cout << " 2 - Find fastest route" << endl;
+	cout << " 3 - Find fastest route going through some points" << endl;
+	cout << " 4 - Return" << endl;
+	cout << " 5 - Exit" << endl;
 
 	int opcao = 0;
 	cout << endl;
 	cout << "Choose an option: ";
-	while (opcao < 1 || opcao > 6) {
+	while (opcao < 1 || opcao > 5) {
 		if (cin >> opcao) {
 
 			switch (opcao) {
@@ -166,20 +180,17 @@ void graphMenu() {
 				goBack();
 				break;
 			case 2:
-				openMap();
-				break;
-			case 3:
 				findFastestRoute();
 				goBack();
 				break;
-			case 4:
+			case 3:
 				findFastestRouteThroughPoints();
 				goBack();
 				break;
-			case 5:
+			case 4:
 				mainMenu();
 				break;
-			case 6:
+			case 5:
 				leave();
 				break;
 			default:
@@ -230,7 +241,7 @@ void leave() {
 	while (opcao != "y" && opcao != "Y" && opcao != "n" && opcao != "N") {
 		getline(cin, opcao);
 		if (opcao == "y" || opcao == "Y") {
-			//guardarFicheiroClientes();
+			saveClientsFile();
 			cout << "\nSaved changes! Leaving... \n";
 			sleep(1);
 			break;

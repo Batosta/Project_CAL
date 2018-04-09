@@ -22,6 +22,11 @@ vector<Travel *> RideShare::getTravels() const {
 
 	return this->allTravels;
 }
+Graph<int> RideShare::getGraph() const {
+
+	return this->graph;
+}
+
 Client * RideShare::getClientByID(int clientID) {
 
 	for (auto it = allClients.begin(); it != allClients.end(); it++) {
@@ -66,7 +71,7 @@ bool RideShare::existsNodeID(int nodeID) {
 			it != this->graph.getVertexSet().end(); it++) {
 
 		if (i > 1) {
-			if((*it)->getInfo() == nodeID)
+			if ((*it)->getInfo() == nodeID)
 				return true;
 		}
 		i++;
@@ -91,17 +96,20 @@ void RideShare::addTravel(Travel * newTravel) {
 
 	this->allTravels.push_back(newTravel);
 }
+void RideShare::addRequest(Request * newRequest) {
+
+	this->allRequests.push_back(newRequest);
+}
 void RideShare::addNode(int ID, int x, int y) {
 
 	this->graph.addVertex(ID, x, y);
 }
 void RideShare::addEdge(int originID, int destID, int direction) {
 
-	if (direction == 0){
+	if (direction == 0) {
 		this->graph.addEdge(originID, destID);
 		this->graph.addEdge(destID, originID);
-	}
-	else
+	} else
 		this->graph.addEdge(originID, destID);
 }
 
@@ -125,6 +133,19 @@ bool RideShare::removeTravel(int uniqueID) {
 		if ((*it)->getUniqueTravelID() == uniqueID) {
 
 			allTravels.erase(it);
+			return true;
+		}
+	}
+	return false;
+}
+
+bool RideShare::removeRequest(int uniqueID) {
+
+	for (auto it = allRequests.begin(); it != allRequests.end(); it++) {
+
+		if ((*it)->getUniqueRequestID() == uniqueID) {
+
+			allRequests.erase(it);
 			return true;
 		}
 	}
@@ -187,29 +208,71 @@ void RideShare::showAllNodes() {
 	}
 }
 
-void RideShare::showFastestRoute(int source, int dest){
+string RideShare::showAllRequests() {
 
-	cout << "\nTo go from the node nº " << source << " to the node nº " << dest << ": ";
+	string allInfo = "";
+
+	if (allRequests.size() == 0) {
+
+		allInfo = "There are no Requests to show.\n";
+	} else {
+		allInfo += "All Requests:\n";
+		for (auto it = this->allRequests.begin(); it != this->allRequests.end();
+				it++) {
+			allInfo += (*it)->showInfo();
+		}
+	}
+
+	return allInfo;
+}
+
+int RideShare::getSimpleTimeRoute(int source, int dest) {
+
+	return getDistanceRoute(source, dest) / 140.0;
+}
+int RideShare::getDistanceRoute(int source, int dest) {
+
+	int distance;
+	this->graph.dijkstraShortestPath(source);
+	vector<int> path = this->graph.getPath(source, dest);
+
+	for (size_t t = 0; t < path.size(); t++) {
+
+		for (auto it = this->graph.getVertexSet().begin();
+				it != this->graph.getVertexSet().end(); it++) {
+
+			if ((*it)->getInfo() == path.at(t))
+				distance += (*it)->getDist();
+		}
+	}
+	return distance;
+}
+vector<int> RideShare::getFastestRoute(int source, int dest) {
+
+	cout << "\nTo go from the node nº " << source << " to the node nº " << dest
+			<< ": ";
 
 	this->graph.dijkstraShortestPath(source);
 	vector<int> path = this->graph.getPath(source, dest);
 
 	int totalDistance = 0;
-	for(size_t t = 0; t < path.size(); t++){
+	for (size_t t = 0; t < path.size(); t++) {
 
-		if(t != path.size() - 1)
+		if (t != path.size() - 1)
 			cout << path.at(t) << " -> ";
 		else
 			cout << path.at(t) << endl;
 
-		for(auto it = this->graph.getVertexSet().begin(); it != this->graph.getVertexSet().end(); it++){
+		for (auto it = this->graph.getVertexSet().begin();
+				it != this->graph.getVertexSet().end(); it++) {
 
-			if((*it)->getInfo() == path.at(t))
+			if ((*it)->getInfo() == path.at(t))
 				totalDistance += (*it)->getDist();
 		}
 	}
 
-	cout << "Distance: " << totalDistance/10.0 << " meters" << endl;
+	cout << "Distance: " << totalDistance / 10.0 << " meters" << endl;
+	return path;
 }
 
 #endif /* RIDESHARE_CPP_ */

@@ -1,8 +1,4 @@
 #include "Functions.h"
-#include "Client.h"
-#include "Rideshare.h"
-#include "graphviewer.h"
-#include "edgetype.h"
 
 using namespace std;
 
@@ -16,13 +12,6 @@ void initialize() {
 	readClientsFile();
 	readNodesFile();
 	readEdgesFile();
-}
-
-void createRideShare() {
-
-	vector<Client *> clients;
-	vector<Travel *> travels;
-	rideShare = new RideShare(clients, travels);
 }
 
 void readClientsFile() {
@@ -115,6 +104,27 @@ void readEdgesFile() {
 	file.close();
 }
 
+void saveClientsFile() {
+
+	ofstream file("docs/clients.txt");
+
+	vector<Client *> clientsVector;
+
+	for (Client * elem : rideShare->getClients()) {
+		clientsVector.push_back(elem);
+	}
+
+	for (size_t i = 0; i < clientsVector.size(); i++) {
+		file << clientsVector.at(i)->getUniqueClientID() << "/";
+		file << clientsVector.at(i)->getName() << "/";
+		file << clientsVector.at(i)->getPhoneNumber() << "/";
+
+		if (i != clientsVector.size() - 1)
+			file << endl;
+	}
+	file.close();
+}
+
 void seeAllSomething(string str) {
 
 	cout << endl << endl;
@@ -128,8 +138,10 @@ void seeAllSomething(string str) {
 		i = 0;
 	else if (str == "travels")
 		i = 1;
-	else
+	else if (str == "nodes")
 		i = 2;
+	else
+		i = 3;
 
 	string output = "";
 	switch (i) {
@@ -142,6 +154,9 @@ void seeAllSomething(string str) {
 		break;
 	case 2:
 		rideShare->showAllNodes();
+		break;
+	case 3:
+		output = rideShare->showAllRequests();
 		break;
 	}
 
@@ -189,9 +204,9 @@ void findFastestRoute() {
 		return;
 	}
 
-	rideShare->showFastestRoute(sourceID, destID);
+	vector<int> path = rideShare->getFastestRoute(sourceID, destID);
+	showRouteMap(path);
 }
-
 void findFastestRouteThroughPoints() {
 
 	string tempNumber;
@@ -263,11 +278,56 @@ void findFastestRouteThroughPoints() {
 	}
 	middlePoints.push_back(destID);
 
+	vector<int> completePath;
+	vector<int> tempPath;
+	completePath.push_back(sourceID);
+	for (size_t t = 0; t < middlePoints.size() - 1; t++) {
 
-	for(size_t t = 0; t < middlePoints.size() - 1; t++){
+		tempPath = rideShare->getFastestRoute(middlePoints.at(t),
+				middlePoints.at(t + 1));
+		for (size_t t = 1; t < tempPath.size(); t++) {
 
-		rideShare->showFastestRoute(middlePoints.at(t), middlePoints.at(t+1));
+			completePath.push_back(tempPath.at(t));
+		}
 	}
+	showRouteMap(completePath);
+}
+void showRouteMap(vector<int> path) {
+
+	gv = new GraphViewer(600, 600, false);
+	gv->defineVertexColor("yellow");
+	gv->defineEdgeColor("black");
+	gv->setBackground("docs/vilareal.png");
+	gv->defineEdgeCurved(false);
+	gv->createWindow(767, 792);
+
+	for (size_t t = 0; t < path.size(); t++) {
+
+		for (auto it = rideShare->getGraph().getVertexSet().begin();
+				it != rideShare->getGraph().getVertexSet().end(); it++) {
+
+			if ((*it)->getInfo() == path.at(t)) {
+
+				gv->addNode(path.at(t), (*it)->getXCoordinate(),
+						(*it)->getYCoordinate());
+
+				if (t != 0)
+					gv->addEdge(t, path.at(t - 1), path.at(t),
+							EdgeType::DIRECTED);
+
+				break;
+			}
+		}
+		sleep(1);
+		gv->rearrange();
+	}
+}
+
+void createRideShare() {
+
+	vector<Client *> clients;
+	vector<Travel *> travels;
+	rideShare = new RideShare(clients, travels);
 }
 
 void createNewClient() {
@@ -306,7 +366,7 @@ void createNewTravel() {
 	cin.clear();
 	cin.ignore(10000, '\n');
 
-	cout << "Insert the ID of the new Client who is driving: ";
+	cout << "Insert the ID of the Client who is driving: ";
 	getline(cin, tempID);
 	if (!is_number(tempID)) {
 		cout << "Not an integer.\n" << endl;
@@ -344,43 +404,101 @@ void createNewTravel() {
 	sleep(1);
 }
 
-void deleteClient() {
+void createNewRequest() {
+
+	int clientID, startPlace, endPlace, toleranceTime;
+	string tempNumber, departureTime;
 
 	cout << endl << endl;
 	cout << "-----------" << endl;
 	cout << "RideSharing" << endl;
 	cout << "-----------" << endl;
 	cout << endl << endl;
-	cout << "Insert the ID of the Client to be removed: ";
 	cin.clear();
-	int uniqueID;
-	string tempID;
 	cin.ignore(10000, '\n');
-	getline(cin, tempID);
 
-	if (!is_number(tempID)) {
+	cout << "Insert the ID of the new Client requesting: ";
+	getline(cin, tempNumber);
+	if (!is_number(tempNumber)) {
 		cout << "Not an integer.\n" << endl;
 		return;
 	}
+	clientID = stoi(tempNumber);
+	if (!rideShare->existsClientID(clientID)) {
+		cout << "\nThere is no Client with the ID: " << clientID << endl;
+		return;
+	}
 
-	uniqueID = stoi(tempID);
+	cout << "Insert the departure time of the request: (e.g 11:00) ";
+	getline(cin, departureTime);
+	Time time = checkTime(departureTime);
+	if (time.getHours() == -1 && time.getMinutes() == -1) {
+		cout << "Not in the right format.\n" << endl;
+		return;
+	}
 
-	if (rideShare->removeClient(uniqueID))
-		cout << "\nClient removed with success: " << uniqueID << endl;
-	else
-		cout << "\nThere is no Client with the ID: " << uniqueID << endl;
+	cout << "Insert the ID of the departure node: ";
+	getline(cin, tempNumber);
+	if (!is_number(tempNumber)) {
+		cout << "Not an integer.\n" << endl;
+		return;
+	}
+	startPlace = stoi(tempNumber);
+	if (!rideShare->existsNodeID(startPlace)) {
+		cout << "\nThere is no Node with the ID: " << startPlace << endl;
+		return;
+	}
+
+	cout << "Insert the ID of the end of travel node: ";
+	getline(cin, tempNumber);
+	if (!is_number(tempNumber)) {
+		cout << "Not an integer.\n" << endl;
+		return;
+	}
+	endPlace = stoi(tempNumber);
+	if (!rideShare->existsNodeID(endPlace)) {
+		cout << "\nThere is no Node with the ID: " << startPlace << endl;
+		return;
+	}
+	if (endPlace == startPlace) {
+		cout << "\nThe source and destiny node ID can not be the same. "
+				<< endl;
+		return;
+	}
+
+	cout << "Insert the tolerance time of the travel: (minutes) ";
+	getline(cin, tempNumber);
+	if (!is_number(tempNumber)) {
+		cout << "Not an integer.\n" << endl;
+		return;
+	}
+	toleranceTime = stoi(tempNumber);
+
+	Request * newRequest = new Request(rideShare,
+			rideShare->getClientByID(clientID), checkTime(departureTime),
+			startPlace, endPlace,
+			rideShare->getSimpleTimeRoute(startPlace, endPlace), toleranceTime);
+	rideShare->addRequest(newRequest);
+	cout << "\nRequest added with success!" << endl << endl;
 
 	sleep(1);
-	return;
 }
-void deleteTravel() {
+
+void deleteSomething(int number) {
 
 	cout << endl << endl;
 	cout << "-----------" << endl;
 	cout << "RideSharing" << endl;
 	cout << "-----------" << endl;
 	cout << endl << endl;
-	cout << "Insert the ID of the Travel to be removed: ";
+
+	if (number == 1)
+		cout << "Insert the ID of the Client to be removed: ";
+	else if (number == 2)
+		cout << "Insert the ID of the Travel to be removed: ";
+	else
+		cout << "Insert the ID of the Request to be removed: ";
+
 	cin.clear();
 	int uniqueID;
 	string tempID;
@@ -391,13 +509,27 @@ void deleteTravel() {
 		cout << "Not an integer.\n" << endl;
 		return;
 	}
-
 	uniqueID = stoi(tempID);
 
-	if (rideShare->removeTravel(uniqueID))
-		cout << "\nTravel removed with success: " << uniqueID << endl;
-	else
-		cout << "\nThere is no Travel with the ID: " << uniqueID << endl;
+	if (number == 1) {
+
+		if (rideShare->removeClient(uniqueID))
+			cout << "\nClient removed with success: " << uniqueID << endl;
+		else
+			cout << "\nThere is no Client with the ID: " << uniqueID << endl;
+	} else if (number == 2) {
+
+		if (rideShare->removeTravel(uniqueID))
+			cout << "\nTravel removed with success: " << uniqueID << endl;
+		else
+			cout << "\nThere is no Travel with the ID: " << uniqueID << endl;
+	} else {
+
+		if (rideShare->removeRequest(uniqueID))
+			cout << "\nRequest removed with success: " << uniqueID << endl;
+		else
+			cout << "\nThere is no Request with the ID: " << uniqueID << endl;
+	}
 
 	sleep(1);
 	return;
@@ -419,4 +551,25 @@ void openMap() {
 	gv->setBackground("docs/vilareal.png");
 	gv->defineEdgeCurved(false);
 	gv->createWindow(767, 792);
+}
+
+Time checkTime(string time) {
+
+	Time timeStruct = Time(-1, -1);
+
+	istringstream infoClient(time);
+	int hour, minutes;
+	char garbage;
+
+	if (time.length() != 5 || time[2] != ':')
+		return timeStruct;
+
+	infoClient >> hour;
+	infoClient >> garbage;
+	infoClient >> minutes;
+
+	if (hour > 23 || hour < 0 || minutes > 59 || minutes < 0)
+		return timeStruct;
+
+	return Time(hour, minutes);
 }

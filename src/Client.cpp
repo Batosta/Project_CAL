@@ -57,6 +57,10 @@ int Client::getUniqueClientID() const {
 
 	return uniqueClientID;
 }
+string Client::getPhoneNumber() const{
+
+	return phoneNumber;
+}
 
 //Set Methods
 void Client::setName(string name) {

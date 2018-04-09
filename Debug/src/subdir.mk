@@ -6,7 +6,9 @@
 CPP_SRCS += \
 ../src/Client.cpp \
 ../src/Functions.cpp \
+../src/Request.cpp \
 ../src/Rideshare.cpp \
+../src/Time.cpp \
 ../src/Travel.cpp \
 ../src/connection.cpp \
 ../src/graphviewer.cpp \
@@ -16,7 +18,9 @@ CPP_SRCS += \
 OBJS += \
 ./src/Client.o \
 ./src/Functions.o \
+./src/Request.o \
 ./src/Rideshare.o \
+./src/Time.o \
 ./src/Travel.o \
 ./src/connection.o \
 ./src/graphviewer.o \
@@ -26,7 +30,9 @@ OBJS += \
 CPP_DEPS += \
 ./src/Client.d \
 ./src/Functions.d \
+./src/Request.d \
 ./src/Rideshare.d \
+./src/Time.d \
 ./src/Travel.d \
 ./src/connection.d \
 ./src/graphviewer.d \

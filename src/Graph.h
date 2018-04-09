@@ -26,14 +26,14 @@ class Vertex {
 
 	double dist = 0;
 	Vertex<T> *path = NULL;
-	int queueIndex = 0; 		// required by MutablePriorityQueue
+	int queueIndex = 0; 										// required by MutablePriorityQueue
 
 	void addEdge(Vertex<T> *dest, double w);
 	bool removeEdgeTo(Vertex<T> *d);
 public:
 	Vertex(T in, int xCo, int yCo);
 	friend class Graph<T> ;
-	bool operator<(Vertex<T> & vertex) const; // // required by MutablePriorityQueue
+	bool operator<(Vertex<T> & vertex) const; 					// required by MutablePriorityQueue
 
 	T getInfo() const;
 	T* getInfoPointer() {
