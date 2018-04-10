@@ -11,8 +11,8 @@ Travel::Travel() {
 
 }
 Travel::Travel(RideShare * rideShare, int availableSeats, Client * driver,
-		std::string travelDepartureTime, std::string travelStartPlace,
-		std::string travelEndPlace) :
+		Time time, int tolerance, int simpleTime, int travelStartPlace,
+		int travelEndPlace, vector<int> path) :
 		uniqueTravelID(++idTravel_provider) {
 
 	this->rideshare = rideShare;
@@ -20,10 +20,13 @@ Travel::Travel(RideShare * rideShare, int availableSeats, Client * driver,
 	this->driver = driver;
 	vector<Client *> clients;
 	this->allClientsGoing = clients;
-	this->travelDepartureTime = travelDepartureTime;
+	this->travelDepartureTime = time;
+	this->toleranceTime = tolerance;
+	this->simpleTime = simpleTime;
 	this->travelStartPlace = travelStartPlace;
 	this->travelEndPlace = travelEndPlace;
-	this->travelDistance = 0.0;
+	this->originalPath = path;
+	this->currentPath = path;
 }
 
 //Get Methods
@@ -31,38 +34,45 @@ int Travel::getAvailableSeats() const {
 
 	return this->availableSeats;
 }
-string Travel::getTravelDepartureTime() const {
+Time Travel::getTravelDepartureTime() const {
 
 	return this->travelDepartureTime;
 }
-string Travel::getTravelStartPlace() const {
+int Travel::getTravelStartPlace() const {
 
 	return this->travelStartPlace;
 }
-string Travel::getTravelEndPlace() const {
+int Travel::getTravelEndPlace() const {
 
 	return this->travelEndPlace;
-}
-float Travel::getTravelDistance() const {
-
-	return 0.0;
-}
-float Travel::getTravelEstimatedTime() const {
-
-	float averageSpeed = 25.0;
-	return this->travelDistance / averageSpeed;
-}
-int Travel::getUniqueTravelID() const {
-
-	return this->uniqueTravelID;
 }
 Client * Travel::getTravelDriver() const {
 
 	return this->driver;
 }
-std::vector<Client *> Travel::getAllClientsGoing() const {
+vector<Client *> Travel::getAllClientsGoing() const {
 
 	return this->allClientsGoing;
+}
+int Travel::getToleranceTime() const {
+
+	return this->toleranceTime;
+}
+int Travel::getUniqueTravelID() const {
+
+	return this->uniqueTravelID;
+}
+int Travel::getSimpleTime() const {
+
+	return this->simpleTime;
+}
+vector<int> Travel::getOriginalPath() const {
+
+	return this->originalPath;
+}
+vector<int> Travel::getCurrentPath() const {
+
+	return this->currentPath;
 }
 
 //Set Methods
@@ -74,25 +84,37 @@ void Travel::setTravelDriver(Client * driver) {
 
 	this->driver = driver;
 }
-void Travel::setAllClientsGoing(std::vector<Client *> clients) {
+void Travel::setAllClientsGoing(vector<Client *> clients) {
 
 	this->allClientsGoing = clients;
 }
-void Travel::setTravelDepartureTime(string departureTime) {
+void Travel::setTravelDepartureTime(Time time) {
 
-	this->travelDepartureTime = departureTime;
+	this->travelDepartureTime = time;
 }
-void Travel::setTravelStartPlace(std::string start) {
+void Travel::setTravelStartPlace(int start) {
 
 	this->travelStartPlace = start;
 }
-void Travel::setTravelEndPlace(std::string end) {
+void Travel::setTravelEndPlace(int end) {
 
 	this->travelEndPlace = end;
 }
-void Travel::setTravelDistance(float distance) {
+void Travel::setToleranceTime(int time) {
 
-	this->travelDistance = distance;
+	this->toleranceTime = time;
+}
+void Travel::setSimpleTime(int time) {
+
+	this->simpleTime = time;
+}
+void Travel::setOriginalPath(vector<int> path) {
+
+	this->originalPath = path;
+}
+void Travel::setCurrentPath(vector<int> path) {
+
+	this->currentPath = path;
 }
 
 //Other Methods
@@ -100,16 +122,24 @@ string Travel::showInfo() const {
 
 	string info = "";
 
-	info += "Travel nº " + std::to_string(this->uniqueTravelID) + ":\n"
+	info += "Travel nº " + to_string(this->uniqueTravelID) + ":\n"
 			+ "\t -Driver: " + this->driver->getName() + "\n"
-			+ "\t -Departure Time: " + this->travelDepartureTime + "\n"
-			+ "\t -Estimate Time: "
-			+ std::to_string(this->getTravelEstimatedTime()) + "\n"
-			+ "\t -Start Point: " + this->travelStartPlace + "\n"
-			+ "\t -End Point: " + this->travelEndPlace + "\n" + "\t -Distance: "
-			+ std::to_string(this->travelDistance) + "\n"
-			+ "\t -Available Seats: " + std::to_string(this->availableSeats)
-			+ "\n" + "\t -Clients Traveling: ";
+			+ "\t -Departure Time: ";
+
+	if (travelDepartureTime.getHours() < 10)
+		info += "0";
+
+	info += to_string(this->travelDepartureTime.getHours()) + ":";
+
+	if (travelDepartureTime.getMinutes() < 10)
+		info += "0";
+
+	info += to_string(this->travelDepartureTime.getMinutes()) + "\n"
+			+ "\t -Tolerance Time: " + to_string(this->toleranceTime) + "\n"
+			+ "\t -Start Point: " + to_string(this->travelStartPlace) + "\n"
+			+ "\t -End Point: " + to_string(this->travelEndPlace) + "\n"
+			+ "\t -Available Seats: " + to_string(this->availableSeats) + "\n"
+			+ "\t -Clients Traveling: ";
 
 	if (allClientsGoing.size() == 0) {
 
@@ -124,6 +154,18 @@ string Travel::showInfo() const {
 		info += this->allClientsGoing.at(t)->getName() + ", ";
 
 	}
+
+	cout << this->getCurrentPath().size();
+
+	for (size_t t = 0; t < this->getCurrentPath().size(); t++) {
+
+		if (t == (this->getCurrentPath().size() - 1)) {
+			info += this->getCurrentPath().at(t);
+			break;
+		}
+		info += this->getCurrentPath().at(t) + ", ";
+	}
+
 	info += "\n";
 
 	return info;

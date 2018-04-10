@@ -1,5 +1,8 @@
-src/Travel.o: ../src/Travel.cpp ../src/Travel.h ../src/Client.h
+src/Travel.o: ../src/Travel.cpp ../src/Travel.h ../src/Client.h \
+ ../src/Time.h
 
 ../src/Travel.h:
 
 ../src/Client.h:
+
+../src/Time.h:

@@ -54,6 +54,9 @@ public:
 	int getDistanceRoute(int source, int dest);
 	int getSimpleTimeRoute(int source, int dest);
 
+	void manageTravels();
+	void clearVectors();
+
 private:
 
 	std::vector<Client *> allClients;

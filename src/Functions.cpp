@@ -354,9 +354,9 @@ void createNewClient() {
 }
 void createNewTravel() {
 
-	int driverID, seats;
-	string tempID, tempSeats;
-	string startTime, startPlace, endPlace;
+	int driverID, seats, startPlace, endPlace, tolerance;
+	string tempNumber;
+	string departureTime;
 
 	cout << endl << endl;
 	cout << "-----------" << endl;
@@ -367,40 +367,81 @@ void createNewTravel() {
 	cin.ignore(10000, '\n');
 
 	cout << "Insert the ID of the Client who is driving: ";
-	getline(cin, tempID);
-	if (!is_number(tempID)) {
+	getline(cin, tempNumber);
+	if (!is_number(tempNumber)) {
 		cout << "Not an integer.\n" << endl;
 		return;
 	}
-	driverID = stoi(tempID);
+	driverID = stoi(tempNumber);
 	if (!rideShare->existsClientID(driverID)) {
 		cout << "\nThere is no Client with the ID: " << driverID << endl;
 		return;
 	}
 
 	cout << "Insert the number of available seats: ";
-	getline(cin, tempSeats);
-	if (!is_number(tempSeats)) {
+	getline(cin, tempNumber);
+	if (!is_number(tempNumber)) {
 		cout << "Not an integer.\n" << endl;
 		return;
 	}
-	seats = stoi(tempSeats);
+	seats = stoi(tempNumber);
 
-	cout << "Insert the departure time: ";
-	getline(cin, startTime);
+	cout << "Insert the departure time: (e.g 11:00) ";
+	getline(cin, departureTime);
+	Time time = checkTime(departureTime);
+	if (time.getHours() == -1 && time.getMinutes() == -1) {
+		cout << "Not in the right format.\n" << endl;
+		return;
+	}
 
-	cout << "Insert the departure place: ";
-	getline(cin, startPlace);
+	cout << "Insert the tolerance time of the travel: (minutes) ";
+	getline(cin, tempNumber);
+	if (!is_number(tempNumber)) {
+		cout << "Not an integer.\n" << endl;
+		return;
+	}
+	tolerance = stoi(tempNumber);
 
-	cout << "Insert the destination: ";
-	getline(cin, endPlace);
+	cout << "Insert the ID of the departure node: ";
+	getline(cin, tempNumber);
+	if (!is_number(tempNumber)) {
+		cout << "Not an integer.\n" << endl;
+		return;
+	}
+	startPlace = stoi(tempNumber);
+	if (!rideShare->existsNodeID(startPlace)) {
+		cout << "\nThere is no Node with the ID: " << startPlace << endl;
+		return;
+	}
+
+	cout << "Insert the ID of the end of travel node: ";
+	getline(cin, tempNumber);
+	if (!is_number(tempNumber)) {
+		cout << "Not an integer.\n" << endl;
+		return;
+	}
+	endPlace = stoi(tempNumber);
+	if (!rideShare->existsNodeID(endPlace)) {
+		cout << "\nThere is no Node with the ID: " << startPlace << endl;
+		return;
+	}
+	if (endPlace == startPlace) {
+		cout << "\nThe source and destiny node ID can not be the same. "
+				<< endl;
+		return;
+	}
+
+	int simpleTime = rideShare->getSimpleTimeRoute(startPlace, endPlace);
+	vector<int> path = rideShare->getGraph().getPath(startPlace, endPlace);
+	cout << "path size: " << path.size() << endl;
 
 	Travel * newTravel = new Travel(rideShare, seats,
-			rideShare->getClientByID(driverID), startTime, startPlace,
-			endPlace);
+			rideShare->getClientByID(driverID), time, tolerance, simpleTime, startPlace, endPlace, path);
 	rideShare->addTravel(newTravel);
-	cout << "\nTravel added with success!" << endl << endl;
 
+	rideShare->manageTravels();
+
+	cout << "\nTravel added with success!" << endl << endl;
 	sleep(1);
 }
 
@@ -479,8 +520,10 @@ void createNewRequest() {
 			startPlace, endPlace,
 			rideShare->getSimpleTimeRoute(startPlace, endPlace), toleranceTime);
 	rideShare->addRequest(newRequest);
-	cout << "\nRequest added with success!" << endl << endl;
 
+	rideShare->manageTravels();
+
+	cout << "\nRequest added with success!" << endl << endl;
 	sleep(1);
 }
 

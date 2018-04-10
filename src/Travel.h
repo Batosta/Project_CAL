@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "Client.h"
+#include "Time.h"
 
 class RideShare;
 
@@ -16,26 +17,30 @@ public:
 
 	Travel();
 	Travel(RideShare * rideshare, int availableSeats, Client * driver,
-			std::string travelDepartureTime, std::string travelStartPlace,
-			std::string travelEndPlace);
+			Time time, int tolerance, int travelStartPlace, int travelEndPlace, int simpleTime, std::vector<int> path);
 
 	Client * getTravelDriver() const;
 	std::vector<Client *> getAllClientsGoing() const;
 	int getAvailableSeats() const;
-	std::string getTravelDepartureTime() const;
-	std::string getTravelStartPlace() const;
-	std::string getTravelEndPlace() const;
-	float getTravelDistance() const;
-	float getTravelEstimatedTime() const;
+	Time getTravelDepartureTime() const;
+	int getTravelStartPlace() const;
+	int getTravelEndPlace() const;
+	int getToleranceTime() const;
+	int getSimpleTime() const;
+	std::vector<int> getOriginalPath() const;
+	std::vector<int> getCurrentPath() const;
 	int getUniqueTravelID() const;
 
 	void setTravelDriver(Client * driver);
 	void setAllClientsGoing(std::vector<Client *> clients);
 	void setAvailableSeats(int seats);
-	void setTravelStartPlace(std::string start);
-	void setTravelEndPlace(std::string end);
-	void setTravelDepartureTime(std::string departureTime);
-	void setTravelDistance(float distance);
+	void setTravelStartPlace(int start);
+	void setTravelEndPlace(int end);
+	void setTravelDepartureTime(Time time);
+	void setToleranceTime(int time);
+	void setSimpleTime(int time);
+	void setOriginalPath(std::vector<int> path);
+	void setCurrentPath(std::vector<int> path);
 
 	std::string showInfo() const;
 
@@ -44,12 +49,14 @@ private:
 	RideShare * rideshare;
 	Client * driver;
 	std::vector<Client *> allClientsGoing;
-	//std::vector<Place *> allPlacesClientsGoing;
+	std::vector<int> originalPath;
+	std::vector<int> currentPath;
 	int availableSeats;
-	std::string travelDepartureTime;
-	std::string travelStartPlace;
-	std::string travelEndPlace;
-	float travelDistance;
+	Time travelDepartureTime;
+	int travelStartPlace;
+	int travelEndPlace;
+	int toleranceTime;
+	int simpleTime;
 	int uniqueTravelID;
 	static int idTravel_provider;
 };

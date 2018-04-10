@@ -86,26 +86,26 @@ string Request::showInfo() const {
 
 	string info = "";
 
-	info += "Request nº " + std::to_string(this->uniqueRequestID) + "\n"
+	info += "Request nº " + to_string(this->uniqueRequestID) + "\n"
 			+ "\t -Client Name: " + this->client->getName() + "\n"
 			+ "\t -Expected Departure Time: ";
 
 	if (requestDepartureTime.getHours() < 10)
 		info += "0";
 
-	info += std::to_string(this->requestDepartureTime.getHours()) + ":";
+	info += to_string(this->requestDepartureTime.getHours()) + ":";
 
 	if (this->requestDepartureTime.getMinutes() < 10)
 		info += "0";
 
-	info += std::to_string(this->requestDepartureTime.getMinutes()) + "\n"
-			+ "\t -Starting Node: " + std::to_string(this->requestStartPlace)
+	info += to_string(this->requestDepartureTime.getMinutes()) + "\n"
+			+ "\t -Starting Node: " + to_string(this->requestStartPlace)
 			+ "\n" + "\t -Finishing Node: "
-			+ std::to_string(this->requestEndPlace) + "\n"
-			+ "\t -Minimum Travel Time: " + std::to_string(this->simpleTime)
+			+ to_string(this->requestEndPlace) + "\n"
+			+ "\t -Minimum Travel Time: " + to_string(this->simpleTime)
 			+ "\n" + "\t -Maximum Late Tolerance: "
-			+ std::to_string(this->toleranceTime) + "\n"
-			+ "\t -Expected Travel Time: " + std::to_string(this->simpleTime)
+			+ to_string(this->toleranceTime) + "\n"
+			+ "\t -Expected Travel Time: " + to_string(this->simpleTime)
 			+ "\n";
 
 	info += "\n";
