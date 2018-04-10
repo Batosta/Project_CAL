@@ -290,7 +290,6 @@ void findFastestRouteThroughPoints() {
 			completePath.push_back(tempPath.at(t));
 		}
 	}
-	showRouteMap(completePath);
 }
 void showRouteMap(vector<int> path) {
 
@@ -436,7 +435,8 @@ void createNewTravel() {
 	cout << "path size: " << path.size() << endl;
 
 	Travel * newTravel = new Travel(rideShare, seats,
-			rideShare->getClientByID(driverID), time, tolerance, simpleTime, startPlace, endPlace, path);
+			rideShare->getClientByID(driverID), time, tolerance, simpleTime,
+			startPlace, endPlace, path);
 	rideShare->addTravel(newTravel);
 
 	rideShare->manageTravels();

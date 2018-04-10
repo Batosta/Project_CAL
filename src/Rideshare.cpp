@@ -256,6 +256,7 @@ vector<int> RideShare::getFastestRoute(int source, int dest) {
 	vector<int> path = this->graph.getPath(source, dest);
 
 	int totalDistance = 0;
+
 	for (size_t t = 0; t < path.size(); t++) {
 
 		if (t != path.size() - 1)
@@ -306,8 +307,6 @@ void RideShare::manageTravels() { //ainda sem as restricoes temporais dos client
 
 			if((fullTravelTime - (*itt)->getSimpleTime()) > (*itt)->getToleranceTime())			//too much time spent
 				continue;
-
-
 		}
 	}
 }

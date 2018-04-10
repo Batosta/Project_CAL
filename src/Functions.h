@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <unistd.h>
+#include <limits.h>
 
 #include "Rideshare.h"
 #include "graphviewer.h"
