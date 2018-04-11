@@ -393,13 +393,17 @@ void createNewTravel() {
 		return;
 	}
 
-	cout << "Insert the tolerance time of the travel: (minutes) ";
+	cout << "Insert the tolerance time of the travel: (minutes)(max = 60) ";
 	getline(cin, tempNumber);
 	if (!is_number(tempNumber)) {
 		cout << "Not an integer.\n" << endl;
 		return;
 	}
 	tolerance = stoi(tempNumber);
+	if(tolerance > 60){
+		cout << "The maximum tolerance is 60 minutes.\n" << endl;
+		return;
+	}
 
 	cout << "Insert the ID of the departure node: ";
 	getline(cin, tempNumber);
@@ -431,14 +435,12 @@ void createNewTravel() {
 	}
 
 	int simpleTime = rideShare->getSimpleTimeRoute(startPlace, endPlace);
-	cout << "SIMPLE TIME: " << simpleTime << endl;
 	vector<int> path = rideShare->getGraph().getPath(startPlace, endPlace);
 
 	Travel * newTravel = new Travel(rideShare, seats,
 			rideShare->getClientByID(driverID), time, tolerance, simpleTime,
 			startPlace, endPlace, path);
 	rideShare->addTravel(newTravel);
-
 	rideShare->manageTravels();
 
 	cout << "\nTravel added with success!" << endl << endl;
@@ -507,13 +509,17 @@ void createNewRequest() {
 		return;
 	}
 
-	cout << "Insert the tolerance time of the travel: (minutes) ";
+	cout << "Insert the tolerance time of the travel: (minutes)(max = 60) ";
 	getline(cin, tempNumber);
 	if (!is_number(tempNumber)) {
 		cout << "Not an integer.\n" << endl;
 		return;
 	}
 	toleranceTime = stoi(tempNumber);
+	if (toleranceTime > 60) {
+		cout << "The maximum tolerance is 60 minutes.\n" << endl;
+		return;
+	}
 
 	Request * newRequest = new Request(rideShare,
 			rideShare->getClientByID(clientID), checkTime(departureTime),

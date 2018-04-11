@@ -57,6 +57,9 @@ public:
 	void manageTravels();
 	void clearVectors();
 
+	Time addTimes(Time time, int tolerance);
+	int differenceBetweenTimes(Time time1, Time time2);
+
 private:
 
 	std::vector<Client *> allClients;

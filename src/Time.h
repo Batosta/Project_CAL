@@ -12,6 +12,10 @@ public:
 	int getHours() const;
 	int getMinutes() const;
 
+	void setHours(int hour);
+	void setMinutes(int min);
+
+
 private:
 
 	int hour;

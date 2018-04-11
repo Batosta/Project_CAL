@@ -19,3 +19,13 @@ int Time::getMinutes() const{
 
 	return this->min;
 }
+
+
+void Time::setHours(int hour){
+
+	this->hour = hour;
+}
+void Time::setMinutes(int min){
+
+	this->min = min;
+}
