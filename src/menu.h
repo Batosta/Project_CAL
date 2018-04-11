@@ -5,7 +5,6 @@
 #include <unistd.h>
 
 #include "Functions.h"
-#
 
 void mainMenu();
 void clientsMenu();

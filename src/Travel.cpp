@@ -20,6 +20,8 @@ Travel::Travel(RideShare * rideShare, int availableSeats, Client * driver,
 	this->driver = driver;
 	vector<Client *> clients;
 	this->allClientsGoing = clients;
+	vector<Request *> requests;
+	this->allRequests = requests;
 	this->travelDepartureTime = time;
 	this->toleranceTime = tolerance;
 	this->simpleTime = simpleTime;
@@ -53,6 +55,10 @@ Client * Travel::getTravelDriver() const {
 vector<Client *> Travel::getAllClientsGoing() const {
 
 	return this->allClientsGoing;
+}
+vector<Request *> Travel::getAllRequests() const {
+
+	return this->allRequests;
 }
 int Travel::getToleranceTime() const {
 
@@ -88,6 +94,10 @@ void Travel::setAllClientsGoing(vector<Client *> clients) {
 
 	this->allClientsGoing = clients;
 }
+void Travel::setAllRequests(vector<Request *> requests) {
+
+	this->allRequests = requests;
+}
 void Travel::setTravelDepartureTime(Time time) {
 
 	this->travelDepartureTime = time;
@@ -122,6 +132,11 @@ void Travel::addClient(Client * c){
 	this->allClientsGoing.push_back(c);
 }
 
+void Travel::addRequest(Request * r){
+
+	this->allRequests.push_back(r);
+}
+
 
 //Other Methods
 string Travel::showInfo() const {
@@ -144,7 +159,8 @@ string Travel::showInfo() const {
 			+ "\t -Tolerance Time: " + to_string(this->toleranceTime) + "\n"
 			+ "\t -Start Point: " + to_string(this->travelStartPlace) + "\n"
 			+ "\t -End Point: " + to_string(this->travelEndPlace) + "\n"
-			+ "\t -Available Seats: " + to_string(this->availableSeats) + "\n"
+			+ "\t -Available Seats: " + to_string(this->allClientsGoing.size())
+			+ "/" + to_string(this->availableSeats) + "\n"
 			+ "\t -Clients Traveling: ";
 
 	if (allClientsGoing.size() == 0) {

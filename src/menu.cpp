@@ -105,13 +105,14 @@ void travelsMenu() {
 	cout << " 4 - Create a new Request" << endl;
 	cout << " 5 - Remove Request" << endl;
 	cout << " 6 - See All Requests" << endl;
-	cout << " 7 - Return" << endl;
-	cout << " 8 - Exit" << endl;
+	cout << " 7 - Manage All Travels" << endl;
+	cout << " 8 - Return" << endl;
+	cout << " 9 - Exit" << endl;
 
 	int opcao = 0;
 	cout << endl;
 	cout << "Choose an option: ";
-	while (opcao < 1 || opcao > 8) {
+	while (opcao < 1 || opcao > 9) {
 		if (cin >> opcao) {
 
 			switch (opcao) {
@@ -140,9 +141,13 @@ void travelsMenu() {
 				goBack();
 				break;
 			case 7:
-				mainMenu();
+				manageAllTravels();
+				goBack();
 				break;
 			case 8:
+				mainMenu();
+				break;
+			case 9:
 				leave();
 				break;
 			default:

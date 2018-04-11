@@ -384,6 +384,10 @@ void createNewTravel() {
 		return;
 	}
 	seats = stoi(tempNumber);
+	if (seats <= 0) {
+		cout << "The number of seats must be above 0.\n" << endl;
+		return;
+	}
 
 	cout << "Insert the departure time: (e.g 11:00) ";
 	getline(cin, departureTime);
@@ -391,6 +395,15 @@ void createNewTravel() {
 	if (time.getHours() == -1 && time.getMinutes() == -1) {
 		cout << "Not in the right format.\n" << endl;
 		return;
+	}
+	for(auto it = rideShare->getTravels().begin(); it != rideShare->getTravels().end(); it++){
+
+		if((*it)->getTravelDriver()->getUniqueClientID() == driverID){
+			if(rideShare->differenceBetweenTimes((*it)->getTravelDepartureTime(), time) <= 60){
+				cout << "Not possible to have 2 travels withing 60 minutes.\n" << endl;
+				return;
+			}
+		}
 	}
 
 	cout << "Insert the tolerance time of the travel: (minutes)(max = 60) ";
@@ -402,6 +415,10 @@ void createNewTravel() {
 	tolerance = stoi(tempNumber);
 	if(tolerance > 60){
 		cout << "The maximum tolerance is 60 minutes.\n" << endl;
+		return;
+	}
+	if (tolerance <= 0) {
+		cout << "The tolerance must be above 0.\n" << endl;
 		return;
 	}
 
@@ -441,7 +458,6 @@ void createNewTravel() {
 			rideShare->getClientByID(driverID), time, tolerance, simpleTime,
 			startPlace, endPlace, path);
 	rideShare->addTravel(newTravel);
-	rideShare->manageTravels();
 
 	cout << "\nTravel added with success!" << endl << endl;
 	sleep(1);
@@ -526,8 +542,6 @@ void createNewRequest() {
 			startPlace, endPlace,
 			rideShare->getSimpleTimeRoute(startPlace, endPlace), toleranceTime);
 	rideShare->addRequest(newRequest);
-
-	rideShare->manageTravels();
 
 	cout << "\nRequest added with success!" << endl << endl;
 	sleep(1);
@@ -622,3 +636,271 @@ Time checkTime(string time) {
 
 	return Time(hour, minutes);
 }
+
+void manageAllTravels(){
+
+	rideShare->clearVectors();
+
+	for(auto itr = rideShare->getRequests().begin(); itr != rideShare->getRequests().end(); itr++){
+
+		for(auto itt = rideShare->getTravels().begin(); itt != rideShare->getTravels().end(); itt++){
+
+			//Driver can not drive himself
+			if((*itt)->getTravelDriver()->getUniqueClientID() == (*itr)->getClient()->getUniqueClientID())
+				continue;
+
+			//Number os seats restriction
+			if((*itt)->getAvailableSeats() <= (*itt)->getAllClientsGoing().size())
+				continue;
+
+			vector<int> sources, dests;
+			sources.push_back((*itt)->getTravelStartPlace());
+			dests.push_back((*itt)->getTravelEndPlace());
+
+			for(auto it = (*itt)->getAllRequests().begin(); it != (*itt)->getAllRequests().end(); it++){
+
+				sources.push_back((*it)->getRequestStartPlace());
+				dests.push_back((*it)->getRequestEndPlace());
+			}
+			sources.push_back((*itr)->getRequestStartPlace());
+			dests.push_back((*itr)->getRequestEndPlace());
+
+			vector<int> daway = bestPathWithAllNodes(bestPath(sources, dests));
+
+
+			//restricoes temporais
+
+//			(*itt)->addRequest();
+
+			//funcao(<src1, src2, scr3>, <d1, d2, d3>)
+			//rideShare->getGraph().getPath(*itt)->getCurrentPath().at(0), )
+
+
+
+
+
+
+
+
+
+		}
+
+		//funcao que vai organizar as viagens para percorrer o menor tempo
+	}
+}
+
+vector<int> bestPath(vector<int> sources, vector<int> dests) {
+
+	//sources 		=  1 2 6 15 4
+	//				   X
+	//dests   		= 10 3 8  5 9
+	//				   X
+
+	//usedSources 	=  1 2
+	//usedDests  	=  10
+	//lastPath		=  1 2
+
+	vector<int> lastPath = {sources.at(0)};
+	vector<int> usedSources = {sources.at(0)};
+	vector<int> usedDests = {dests.at(0)};
+
+	int minDistance = INT_MAX, minT;
+	bool minDestUsed, minSourceUsed;
+	bool destUsed, sourceUsed;
+
+	for (size_t j = 0; j < (sources.size() - 1) * 2; j++) {
+
+		for (size_t t = 1; t < dests.size(); t++) {
+
+			//dijkstra organizing the graph through the last element of the path
+			rideShare->getGraph().dijkstraShortestPath(lastPath.at(lastPath.size() - 1));
+
+			//check if this element has been used in sources
+			sourceUsed = false;
+			destUsed = false;
+			for (size_t k = 0; k < usedSources.size(); k++) {
+
+				if (usedSources.at(k) == sources.at(t))
+					sourceUsed = true;
+			}
+			//check if this element has been used in dests
+			if (sourceUsed) {
+				for (size_t k = 0; k < usedDests.size(); k++) {
+
+					if (usedDests.at(k) == dests.at(t)) {
+
+						destUsed = true;
+						continue;
+					}
+				}
+			}
+			//both have been used
+			if (destUsed)
+				continue;
+			//until this point we are just deciding which element to use next
+
+			vector<int> path;
+			if ((sourceUsed == false) && (destUsed == false)) {	//using sources
+
+				path = rideShare->getGraph().getPath(lastPath.size() - 1, sources.at(t));
+			} else if ((sourceUsed == true) && (destUsed == false)) {//using dests
+
+				path = rideShare->getGraph().getPath(lastPath.size() - 1, dests.at(t));
+			}
+
+			int tempDist = 0;
+			for (size_t k = 0; k < path.size() - 1; k++) {
+
+				tempDist += rideShare->getGraph().calculateEdgeWeight(
+						path.at(k), path.at(k + 1));
+			}
+			if (tempDist < minDistance) {
+
+				minDistance = tempDist;
+				minT = t;
+				minSourceUsed = sourceUsed;
+				minDestUsed = destUsed;
+			}
+		}
+
+
+		if ((minSourceUsed == false) && (minDestUsed == false)) {
+
+			usedDests.push_back(sources.at(minT));
+			lastPath.push_back(sources.at(minT));
+		} else if ((minSourceUsed == true) && (minDestUsed == false)) {
+
+			usedDests.push_back(dests.at(minT));
+			lastPath.push_back(dests.at(minT));
+		}
+
+		minDistance = INT_MAX;
+	}
+
+	lastPath.push_back(dests.at(0));
+	return lastPath;
+}
+
+vector<int> bestPathWithAllNodes(vector<int> path) {
+
+	vector<int> fullPath;
+	for (size_t t = 0; t < path.size() - 1; t++) {
+
+		rideShare->getGraph().dijkstraShortestPath(path.at(t));
+		vector<int> tempPath = rideShare->getGraph().getPath(path.at(t), path.at(t + 1));
+
+		for (size_t i = 0; i < tempPath.size() - 1; i++) {
+
+			fullPath.push_back(tempPath.at(i));
+		}
+	}
+
+	fullPath.push_back(path.size() - 1);
+
+	return fullPath;
+}
+
+
+
+/*
+ void RideShare::manageTravels() {
+
+	clearVectors();
+
+	for (auto itr = this->allRequests.begin(); itr != this->allRequests.end();
+			itr++) {
+
+		for (auto itt = this->allTravels.begin(); itt != this->allTravels.end();
+				itt++) {
+
+			if((*itt)->getTravelDriver()->getUniqueClientID() == (*itr)->getClient()->getUniqueClientID())
+				continue;
+
+			if((*itt)->getAvailableSeats()
+					<= (*itt)->getAllClientsGoing().size())	//no more available seats
+				continue;
+
+			this->graph.dijkstraShortestPath((*itt)->getTravelStartPlace());
+			vector<int> path1 = this->graph.getPath(
+					(*itt)->getTravelStartPlace(),
+					(*itr)->getRequestStartPlace());
+			int totalWaitingTime = 0;
+			for (size_t t = 0; t < path1.size() - 1; t++) {
+
+				totalWaitingTime += this->graph.calculateEdgeWeight(path1.at(t), path1.at(t + 1));
+			}
+			totalWaitingTime /= 70.0;
+			cout << "Waiting Time: " << totalWaitingTime;
+
+			this->graph.dijkstraShortestPath((*itr)->getRequestStartPlace());
+			vector<int> path2 = this->graph.getPath(
+					(*itr)->getRequestStartPlace(),
+					(*itr)->getRequestEndPlace());
+
+			this->graph.dijkstraShortestPath((*itr)->getRequestEndPlace());
+			vector<int> path3 = this->graph.getPath(
+					(*itr)->getRequestEndPlace(), (*itt)->getTravelEndPlace());
+
+
+			vector<int> fullPath;
+			for (size_t t = 0; t < path1.size(); t++) {
+				fullPath.push_back(path1.at(t));
+			}
+			for (size_t t = 1; t < path2.size(); t++) {
+				fullPath.push_back(path2.at(t));
+			}
+			for (size_t t = 1; t < path3.size(); t++) {
+				fullPath.push_back(path3.at(t));
+			}
+
+			int totalTravelMinutes = 0;
+			for (size_t t = 0; t < fullPath.size() - 1; t++) {
+
+				totalTravelMinutes += this->graph.calculateEdgeWeight(
+						fullPath.at(t), fullPath.at(t + 1));
+			}
+			totalTravelMinutes /= 70.0;				//tempo da viagem total (min)
+			cout << "\ntotalTravelMinutes: " << totalTravelMinutes;
+
+
+			Time finishSimpleTime = addTimes((*itt)->getTravelDepartureTime(), (*itt)->getSimpleTime());
+			cout << "\nHora que acabaria: " << finishSimpleTime.getHours() << ":" << finishSimpleTime.getMinutes();
+
+
+			Time finishFullTime;
+			//travel quer sair antes do request (traveler espera pelo requester = tolerancia do traveler)
+			if (((*itt)->getTravelDepartureTime().getHours() == (*itr)->getRequestDepartureTime().getHours()
+					&& (*itt)->getTravelDepartureTime().getMinutes() < (*itr)->getRequestDepartureTime().getMinutes())
+					|| (*itt)->getTravelDepartureTime().getHours() < (*itr)->getRequestDepartureTime().getHours()) {
+
+				cout << "\nA";
+				finishFullTime = addTimes((*itr)->getRequestDepartureTime(), totalTravelMinutes);
+				cout << " Hora que acaba: " << finishFullTime.getHours() << ":" << finishFullTime.getMinutes();
+			}
+			//mesma hora OU travel depois do request (requester espera pelo traveler = tolerancia do requester)
+			else {
+
+				cout << "\nB";
+				finishFullTime = addTimes((*itt)->getTravelDepartureTime(), totalTravelMinutes);
+				cout << " Hora que acaba: " << finishFullTime.getHours() << ":" << finishFullTime.getMinutes();
+			}
+
+			cout << "\ndifference: " << differenceBetweenTimes(finishFullTime, finishSimpleTime);
+			cout << "\ntolerance: " << (*itt)->getToleranceTime();
+
+			if (differenceBetweenTimes(finishFullTime, finishSimpleTime) > (*itt)->getToleranceTime())
+				continue;
+
+			cout << "\ntolerance2: " << (*itr)->getToleranceTime();
+			if (totalWaitingTime > (*itr)->getToleranceTime())
+				continue;
+
+			(*itt)->addClient((*itr)->getClient());
+			(*itt)->addRequest(*itr);
+			(*itt)->setCurrentPath(fullPath);
+			cout << "Added Client nº "
+					<< (*itr)->getClient()->getUniqueClientID() << " - "
+					<< (*itr)->getClient()->getName() << " to this travel.";
+		}
+	}
+}*/

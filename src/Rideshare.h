@@ -25,6 +25,7 @@ public:
 
 	std::vector<Client *> getClients() const;
 	std::vector<Travel *> getTravels() const;
+	std::vector<Request *> getRequests() const;
 	Graph<int> getGraph() const;
 	Client * getClientByID(int clientID);
 	Travel * getTravelByID(int travelID);

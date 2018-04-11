@@ -8,6 +8,7 @@
 
 #include "Client.h"
 #include "Time.h"
+#include "Request.h"
 
 class RideShare;
 
@@ -21,6 +22,7 @@ public:
 
 	Client * getTravelDriver() const;
 	std::vector<Client *> getAllClientsGoing() const;
+	std::vector<Request *> getAllRequests() const;
 	int getAvailableSeats() const;
 	Time getTravelDepartureTime() const;
 	int getTravelStartPlace() const;
@@ -33,6 +35,7 @@ public:
 
 	void setTravelDriver(Client * driver);
 	void setAllClientsGoing(std::vector<Client *> clients);
+	void setAllRequests(std::vector<Request *> requests);
 	void setAvailableSeats(int seats);
 	void setTravelStartPlace(int start);
 	void setTravelEndPlace(int end);
@@ -43,6 +46,7 @@ public:
 	void setCurrentPath(std::vector<int> path);
 
 	void addClient(Client * c);
+	void addRequest(Request * r);
 	std::string showInfo() const;
 
 private:
@@ -50,6 +54,7 @@ private:
 	RideShare * rideshare;
 	Client * driver;
 	std::vector<Client *> allClientsGoing;
+	std::vector<Request *> allRequests;
 	std::vector<int> originalPath;
 	std::vector<int> currentPath;
 	int availableSeats;
