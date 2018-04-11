@@ -431,8 +431,8 @@ void createNewTravel() {
 	}
 
 	int simpleTime = rideShare->getSimpleTimeRoute(startPlace, endPlace);
+	cout << "SIMPLE TIME: " << simpleTime << endl;
 	vector<int> path = rideShare->getGraph().getPath(startPlace, endPlace);
-	cout << "path size: " << path.size() << endl;
 
 	Travel * newTravel = new Travel(rideShare, seats,
 			rideShare->getClientByID(driverID), time, tolerance, simpleTime,

@@ -117,6 +117,12 @@ void Travel::setCurrentPath(vector<int> path) {
 	this->currentPath = path;
 }
 
+void Travel::addClient(Client * c){
+
+	this->allClientsGoing.push_back(c);
+}
+
+
 //Other Methods
 string Travel::showInfo() const {
 
@@ -155,15 +161,14 @@ string Travel::showInfo() const {
 
 	}
 
-	cout << this->getCurrentPath().size();
-
+	info += "\n\t -Path Nodes: ";
 	for (size_t t = 0; t < this->getCurrentPath().size(); t++) {
 
 		if (t == (this->getCurrentPath().size() - 1)) {
-			info += this->getCurrentPath().at(t);
+			info += to_string(this->getCurrentPath().at(t));
 			break;
 		}
-		info += this->getCurrentPath().at(t) + ", ";
+		info += to_string(this->getCurrentPath().at(t)) + ", ";
 	}
 
 	info += "\n";

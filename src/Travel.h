@@ -42,6 +42,7 @@ public:
 	void setOriginalPath(std::vector<int> path);
 	void setCurrentPath(std::vector<int> path);
 
+	void addClient(Client * c);
 	std::string showInfo() const;
 
 private:

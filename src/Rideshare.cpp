@@ -228,22 +228,17 @@ string RideShare::showAllRequests() {
 
 int RideShare::getSimpleTimeRoute(int source, int dest) {
 
-	return getDistanceRoute(source, dest) / 140.0;
+	return getDistanceRoute(source, dest) / 70.0;
 }
 int RideShare::getDistanceRoute(int source, int dest) {
 
-	int distance;
+	double distance = 0;
 	this->graph.dijkstraShortestPath(source);
 	vector<int> path = this->graph.getPath(source, dest);
 
-	for (size_t t = 0; t < path.size(); t++) {
+	for (size_t t = 0; t < path.size() - 1; t++) {
 
-		for (auto it = this->graph.getVertexSet().begin();
-				it != this->graph.getVertexSet().end(); it++) {
-
-			if ((*it)->getInfo() == path.at(t))
-				distance += (*it)->getDist();
-		}
+		distance += this->graph.calculateEdgeWeight(path.at(t), path.at(t+1));
 	}
 	return distance;
 }
@@ -255,33 +250,25 @@ vector<int> RideShare::getFastestRoute(int source, int dest) {
 	this->graph.dijkstraShortestPath(source);
 	vector<int> path = this->graph.getPath(source, dest);
 
-	int totalDistance = 0;
-
-	for (size_t t = 0; t < path.size(); t++) {
+	double totalDistance = 0;
+	for (size_t t = 0; t < path.size() - 1; t++) {
 
 		if (t != path.size() - 1)
 			cout << path.at(t) << " -> ";
 		else
 			cout << path.at(t) << endl;
 
-		for (auto it = this->graph.getVertexSet().begin();
-				it != this->graph.getVertexSet().end(); it++) {
-
-			if ((*it)->getInfo() == path.at(t))
-				totalDistance += (*it)->getDist();
-		}
+		totalDistance += this->graph.calculateEdgeWeight(path.at(t), path.at(t+1));
 	}
 
-	cout << "Distance: " << totalDistance / 10.0 << " meters" << endl;
+	cout << "Distance: " << totalDistance / 6.0 << " meters" << endl;
 	return path;
 }
 
-void RideShare::manageTravels() { //ainda sem as restricoes temporais dos clientes
+void RideShare::manageTravels() {
 
 	clearVectors();
 
-	//Percorremos vector de requests
-	//Percorremos vector de travels (damos prioridade aos clients)
 
 	for (auto itr = this->allRequests.begin(); itr != this->allRequests.end();
 			itr++) {
@@ -289,24 +276,31 @@ void RideShare::manageTravels() { //ainda sem as restricoes temporais dos client
 		for (auto itt = this->allTravels.begin(); itt != this->allTravels.end();
 				itt++) {
 
-			if((*itt)->getAvailableSeats() <= (*itt)->getAllClientsGoing().size())				//no more available seats
+
+t			if((*itt)->getAvailableSeats() <= (*itt)->getAllClientsGoing().size())				//no more available seats
 				continue;
 
 			this->graph.dijkstraShortestPath((*itt)->getTravelStartPlace());
+			vector<int> fullPath;
 			vector<int> path1 = this->graph.getPath((*itt)->getTravelStartPlace(), (*itr)->getRequestStartPlace());
 
 			this->graph.dijkstraShortestPath((*itr)->getRequestStartPlace());
-			vector<int> path2 = this->graph.getPath((*itr)->getRequestStartPlace(), (*itr)->getRequestEndPlace());
+			vector<int> path2 = this->graph.getPath(
+					(*itr)->getRequestStartPlace(),
+					(*itr)->getRequestEndPlace());
 
 			this->graph.dijkstraShortestPath((*itr)->getRequestEndPlace());
-			vector<int> path3 = this->graph.getPath((*itr)->getRequestEndPlace(), (*itt)->getTravelEndPlace());
+			vector<int> path3 = this->graph.getPath(
+					(*itr)->getRequestEndPlace(), (*itt)->getTravelEndPlace());
 
-			int fullTravelTime = this->getSimpleTimeRoute(path1.at(0), path1.at(path1.size()-1));
-			fullTravelTime += this->getSimpleTimeRoute(path2.at(0), path2.at(path2.size()-1));
-			fullTravelTime += this->getSimpleTimeRoute(path3.at(0), path3.at(path3.size()-1));			//travel time picking up this client
+			int fullTravelTime = this->getSimpleTimeRoute(fullPath.at(0), fullPath.at(fullPath.size()-1));
 
-			if((fullTravelTime - (*itt)->getSimpleTime()) > (*itt)->getToleranceTime())			//too much time spent
+
+			if((fullTravelTime - (*itt)->getSimpleTime()) > (*itt)->getToleranceTime())					//too much time spent
 				continue;
+
+			(*itt)->addClient((*itr)->getClient());
+			(*itt)->setCurrentPath(fullPath);
 		}
 	}
 }
