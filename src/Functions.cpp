@@ -104,6 +104,19 @@ void readEdgesFile() {
 	file.close();
 }
 
+void readRequestsFile(){
+
+}
+void readTravelsFile(){
+
+}
+void saveRequestsFile(){
+
+}
+void saveTravelsFile(){
+
+}
+
 void saveClientsFile() {
 
 	ofstream file("docs/clients.txt");
@@ -660,32 +673,44 @@ void manageAllTravels(){
 			for(auto it = (*itt)->getAllRequests().begin(); it != (*itt)->getAllRequests().end(); it++){
 
 				sources.push_back((*it)->getRequestStartPlace());
-				dests.push_back((*it)->getRequestEndPlace());
 			}
+			vector<int> path1 = bestPathWithAllNodes(bestPath(sources, dests));
+
 			sources.push_back((*itr)->getRequestStartPlace());
 			dests.push_back((*itr)->getRequestEndPlace());
 
-			vector<int> daway = bestPathWithAllNodes(bestPath(sources, dests));
+			vector<int> path = bestPathWithAllNodes(bestPath(sources, dests));
+
+			//temporal restrictions
+			int fullDistance = 0, waitingDistance = 0;
+			for (size_t t = 0; t < path.size() - 1; t++) {
+
+				fullDistance += rideShare->getGraph().calculateEdgeWeight(
+						path.at(t), path.at(t + 1));
+
+				if (path.at(t + 1) == (*itr)->getRequestStartPlace()) {
+					waitingDistance = fullDistance;
+				}
+			}
+			int fullTime = fullDistance / 70.0;
+			int waitingTime = waitingDistance / 70.0;
+
+			Time finishSimpleTime = rideShare->addTimes((*itt)->getTravelDepartureTime(), (*itt)->getSimpleTime());
+			Time finishFullTime = rideShare->addTimes((*itt)->getTravelDepartureTime(), fullTime);
+
+			if(rideShare->differenceBetweenTimes(finishFullTime, finishSimpleTime) > (*itt)->getToleranceTime())
+				continue;
+
+			if(waitingDistance > (*itr)->getToleranceTime())
+				continue;
 
 
-			//restricoes temporais
-
-//			(*itt)->addRequest();
-
-			//funcao(<src1, src2, scr3>, <d1, d2, d3>)
-			//rideShare->getGraph().getPath(*itt)->getCurrentPath().at(0), )
-
-
-
-
-
-
-
-
-
+			(*itt)->addClient((*itr)->getClient());
+			(*itt)->addRequest((*itr));
+			(*itt)->setCurrentPath(path);
+			cout << "Added Client nº " << (*itr)->getClient()->getUniqueClientID() << " - "
+					<< (*itr)->getClient()->getName() << " to this travel.";
 		}
-
-		//funcao que vai organizar as viagens para percorrer o menor tempo
 	}
 }
 

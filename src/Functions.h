@@ -19,8 +19,12 @@ void createRideShare();
 void readClientsFile();
 void readNodesFile();
 void readEdgesFile();
+void readRequestsFile();
+void readTravelsFile();
 
 void saveClientsFile();
+void saveRequestsFile();
+void saveTravelsFile();
 
 void seeAllSomething(std::string str);
 void findFastestRoute();
