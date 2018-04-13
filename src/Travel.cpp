@@ -20,8 +20,10 @@ Travel::Travel(RideShare * rideShare, int availableSeats, Client * driver,
 	this->driver = driver;
 	vector<Client *> clients;
 	this->allClientsGoing = clients;
-	vector<Request *> requests;
-	this->allRequests = requests;
+	vector<int> sources;
+	this->sources = sources;
+	vector<int> dests;
+	this->dests = dests;
 	this->travelDepartureTime = time;
 	this->toleranceTime = tolerance;
 	this->simpleTime = simpleTime;
@@ -56,9 +58,13 @@ vector<Client *> Travel::getAllClientsGoing() const {
 
 	return this->allClientsGoing;
 }
-vector<Request *> Travel::getAllRequests() const {
+vector<int> Travel::getAllSources() const {
 
-	return this->allRequests;
+	return this->sources;
+}
+vector<int> Travel::getAllDests() const {
+
+	return this->dests;
 }
 int Travel::getToleranceTime() const {
 
@@ -94,9 +100,13 @@ void Travel::setAllClientsGoing(vector<Client *> clients) {
 
 	this->allClientsGoing = clients;
 }
-void Travel::setAllRequests(vector<Request *> requests) {
+void Travel::setAllSources(vector<int> sources) {
 
-	this->allRequests = requests;
+	this->sources = sources;
+}
+void Travel::setAllDests(vector<int> dests) {
+
+	this->dests = dests;
 }
 void Travel::setTravelDepartureTime(Time time) {
 
@@ -127,16 +137,19 @@ void Travel::setCurrentPath(vector<int> path) {
 	this->currentPath = path;
 }
 
-void Travel::addClient(Client * c){
+void Travel::addClient(Client * client){
 
-	this->allClientsGoing.push_back(c);
+	this->allClientsGoing.push_back(client);
 }
 
-void Travel::addRequest(Request * r){
+void Travel::addSource(int source){
 
-	this->allRequests.push_back(r);
+	this->sources.push_back(source);
 }
+void Travel::addDest(int dest){
 
+	this->dests.push_back(dest);
+}
 
 //Other Methods
 string Travel::showInfo() const {

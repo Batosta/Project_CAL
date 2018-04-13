@@ -247,6 +247,8 @@ void leave() {
 		getline(cin, opcao);
 		if (opcao == "y" || opcao == "Y") {
 			saveClientsFile();
+			saveRequestsFile()
+			saveTravelsFile();
 			cout << "\nSaved changes! Leaving... \n";
 			sleep(1);
 			break;

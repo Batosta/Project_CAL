@@ -22,7 +22,8 @@ public:
 
 	Client * getTravelDriver() const;
 	std::vector<Client *> getAllClientsGoing() const;
-	std::vector<Request *> getAllRequests() const;
+	std::vector<int> getAllSources() const;
+	std::vector<int> getAllDests() const;
 	int getAvailableSeats() const;
 	Time getTravelDepartureTime() const;
 	int getTravelStartPlace() const;
@@ -35,7 +36,8 @@ public:
 
 	void setTravelDriver(Client * driver);
 	void setAllClientsGoing(std::vector<Client *> clients);
-	void setAllRequests(std::vector<Request *> requests);
+	void setAllSources(std::vector<int> sources);
+	void setAllDests(std::vector<int> dests);
 	void setAvailableSeats(int seats);
 	void setTravelStartPlace(int start);
 	void setTravelEndPlace(int end);
@@ -45,8 +47,9 @@ public:
 	void setOriginalPath(std::vector<int> path);
 	void setCurrentPath(std::vector<int> path);
 
-	void addClient(Client * c);
-	void addRequest(Request * r);
+	void addClient(Client * client);
+	void addSource(int source);
+	void addDest(int dest);
 	std::string showInfo() const;
 
 private:
@@ -54,7 +57,8 @@ private:
 	RideShare * rideshare;
 	Client * driver;
 	std::vector<Client *> allClientsGoing;
-	std::vector<Request *> allRequests;
+	std::vector<int> sources;
+	std::vector<int> dests;
 	std::vector<int> originalPath;
 	std::vector<int> currentPath;
 	int availableSeats;

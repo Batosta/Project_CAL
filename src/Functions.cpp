@@ -789,25 +789,24 @@ void manageAllTravels(){
 
 			//Driver can not drive himself
 			if((*itt)->getTravelDriver()->getUniqueClientID() == (*itr)->getClient()->getUniqueClientID()) {
-				cout << "\ncant drive himself";
 				continue;
 			}
-
 			//Number os seats restriction
 			if((*itt)->getAvailableSeats() <= (*itt)->getAllClientsGoing().size()){
-				cout << "\navailable seats";
 				continue;
 			}
-
 			vector<int> sources, dests;
 			sources.push_back((*itt)->getTravelStartPlace());
 			dests.push_back((*itt)->getTravelEndPlace());
 
-			for(auto it = (*itt)->getAllRequests().begin(); it != (*itt)->getAllRequests().end(); it++){
+			for(size_t g = 0; g < (*itt)->getAllSources().size(); g++){
 
-				sources.push_back((*it)->getRequestStartPlace());
+				sources.push_back((*itt)->getAllSources().at(g));
 			}
-			//vector<int> path1 = bestPathWithAllNodes(bestPath(sources, dests));
+			for(size_t g = 0; g < (*itt)->getAllDests().size(); g++){
+
+				dests.push_back((*itt)->getAllDests().at(g));
+			}
 
 			sources.push_back((*itr)->getRequestStartPlace());
 			dests.push_back((*itr)->getRequestEndPlace());
@@ -816,41 +815,33 @@ void manageAllTravels(){
 
 			//temporal restrictions
 			int fullDistance = 0;
-			//int waitingDistance = 0;
 			for (size_t t = 0; t < path.size() - 1; t++) {
 
 				fullDistance += rideShare->getGraph().calculateEdgeWeight(
 						path.at(t), path.at(t + 1));
 
-//				if (path.at(t + 1) == (*itr)->getRequestStartPlace()) {
-//					waitingDistance = fullDistance;
-//				}
 			}
 			int fullTime = fullDistance / 70.0;
-			//int waitingTime = waitingDistance / 70.0;
 
 			Time finishSimpleTime = rideShare->addTimes((*itt)->getTravelDepartureTime(), (*itt)->getSimpleTime());
-
-
 			Time finishFullTime = rideShare->addTimes((*itt)->getTravelDepartureTime(), fullTime);
 
 			finishFullTime = rideShare->addTimes(finishFullTime, rideShare->differenceBetweenTimes((*itt)->getTravelDepartureTime(), (*itr)->getRequestDepartureTime()));
 
-			if(rideShare->differenceBetweenTimes(finishFullTime, finishSimpleTime) > (*itt)->getToleranceTime())
+			if(rideShare->differenceBetweenTimes(finishFullTime, finishSimpleTime) > (*itt)->getToleranceTime()){
 				continue;
-
-
-//			if(waitingDistance > (*itr)->getToleranceTime())
-//				continue;
+			}
 
 
 			(*itt)->addClient((*itr)->getClient());
-			(*itt)->addRequest((*itr));
+			(*itt)->addSource((*itr)->getRequestStartPlace());
+			(*itt)->addDest((*itr)->getRequestEndPlace());
 			(*itt)->setCurrentPath(path);
-			cout << "Added Client nº " << (*itr)->getClient()->getUniqueClientID() << " - "
-					<< (*itr)->getClient()->getName() << " to this travel.\n";
 		}
 	}
+
+	cout << "\nAll travels are now updated." << endl << endl;
+	sleep(1);
 }
 
 vector<int> bestPath(vector<int> sources, vector<int> dests) {
