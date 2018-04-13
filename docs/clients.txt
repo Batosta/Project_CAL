@@ -1,3 +1,12 @@
 1/Joao Nuno/913587093/
-2/Joao Cunha/912345678/
-3/Miguel Carvalho/934567890/
+2/Joao Cunha/912345123/
+3/Miguel Carvalho/934561230/
+4/Carolina Soares/913512393/
+5/Christopher Abreu/912345678/
+6/Miguel Dias/932347890/
+7/Tomás Cardoso/966655776/
+8/Goncalo Silva/961234556/
+9/Pedro Ze/956767890/
+10/Maria Joana/913567793/
+11/Mariana Soares/912346788/
+12/Jose Miranda/934789090/

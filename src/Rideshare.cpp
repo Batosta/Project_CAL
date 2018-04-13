@@ -271,108 +271,6 @@ vector<int> RideShare::getFastestRoute(int source, int dest) {
 	return path;
 }
 
-//void RideShare::manageTravels() {
-//
-//	clearVectors();
-//
-//	for (auto itr = this->allRequests.begin(); itr != this->allRequests.end();
-//			itr++) {
-//
-//		for (auto itt = this->allTravels.begin(); itt != this->allTravels.end();
-//				itt++) {
-//
-//			if((*itt)->getTravelDriver()->getUniqueClientID() == (*itr)->getClient()->getUniqueClientID())
-//				continue;
-//
-//			if((*itt)->getAvailableSeats()
-//					<= (*itt)->getAllClientsGoing().size())	//no more available seats
-//				continue;
-//
-//			this->graph.dijkstraShortestPath((*itt)->getTravelStartPlace());
-//			vector<int> path1 = this->graph.getPath(
-//					(*itt)->getTravelStartPlace(),
-//					(*itr)->getRequestStartPlace());
-//			int totalWaitingTime = 0;
-//			for (size_t t = 0; t < path1.size() - 1; t++) {
-//
-//				totalWaitingTime += this->graph.calculateEdgeWeight(path1.at(t), path1.at(t + 1));
-//			}
-//			totalWaitingTime /= 70.0;
-//			cout << "Waiting Time: " << totalWaitingTime;
-//
-//			this->graph.dijkstraShortestPath((*itr)->getRequestStartPlace());
-//			vector<int> path2 = this->graph.getPath(
-//					(*itr)->getRequestStartPlace(),
-//					(*itr)->getRequestEndPlace());
-//
-//			this->graph.dijkstraShortestPath((*itr)->getRequestEndPlace());
-//			vector<int> path3 = this->graph.getPath(
-//					(*itr)->getRequestEndPlace(), (*itt)->getTravelEndPlace());
-//
-//
-//			vector<int> fullPath;
-//			for (size_t t = 0; t < path1.size(); t++) {
-//				fullPath.push_back(path1.at(t));
-//			}
-//			for (size_t t = 1; t < path2.size(); t++) {
-//				fullPath.push_back(path2.at(t));
-//			}
-//			for (size_t t = 1; t < path3.size(); t++) {
-//				fullPath.push_back(path3.at(t));
-//			}
-//
-//			int totalTravelMinutes = 0;
-//			for (size_t t = 0; t < fullPath.size() - 1; t++) {
-//
-//				totalTravelMinutes += this->graph.calculateEdgeWeight(
-//						fullPath.at(t), fullPath.at(t + 1));
-//			}
-//			totalTravelMinutes /= 70.0;				//tempo da viagem total (min)
-//			cout << "\ntotalTravelMinutes: " << totalTravelMinutes;
-//
-//
-//			Time finishSimpleTime = addTimes((*itt)->getTravelDepartureTime(), (*itt)->getSimpleTime());
-//			cout << "\nHora que acabaria: " << finishSimpleTime.getHours() << ":" << finishSimpleTime.getMinutes();
-//
-//
-//			Time finishFullTime;
-//			//travel quer sair antes do request (traveler espera pelo requester = tolerancia do traveler)
-//			if (((*itt)->getTravelDepartureTime().getHours() == (*itr)->getRequestDepartureTime().getHours()
-//					&& (*itt)->getTravelDepartureTime().getMinutes() < (*itr)->getRequestDepartureTime().getMinutes())
-//					|| (*itt)->getTravelDepartureTime().getHours() < (*itr)->getRequestDepartureTime().getHours()) {
-//
-//				cout << "\nA";
-//				finishFullTime = addTimes((*itr)->getRequestDepartureTime(), totalTravelMinutes);
-//				cout << " Hora que acaba: " << finishFullTime.getHours() << ":" << finishFullTime.getMinutes();
-//			}
-//			//mesma hora OU travel depois do request (requester espera pelo traveler = tolerancia do requester)
-//			else {
-//
-//				cout << "\nB";
-//				finishFullTime = addTimes((*itt)->getTravelDepartureTime(), totalTravelMinutes);
-//				cout << " Hora que acaba: " << finishFullTime.getHours() << ":" << finishFullTime.getMinutes();
-//			}
-//
-//			cout << "\ndifference: " << differenceBetweenTimes(finishFullTime, finishSimpleTime);
-//			cout << "\ntolerance: " << (*itt)->getToleranceTime();
-//
-//			if (differenceBetweenTimes(finishFullTime, finishSimpleTime) > (*itt)->getToleranceTime())
-//				continue;
-//
-//			cout << "\ntolerance2: " << (*itr)->getToleranceTime();
-//			if (totalWaitingTime > (*itr)->getToleranceTime())
-//				continue;
-//
-//			(*itt)->addClient((*itr)->getClient());
-//			(*itt)->addRequest(*itr);
-//			(*itt)->setCurrentPath(fullPath);
-//			cout << "Added Client nº "
-//					<< (*itr)->getClient()->getUniqueClientID() << " - "
-//					<< (*itr)->getClient()->getName() << " to this travel.";
-//		}
-//	}
-//}
-
 void RideShare::clearVectors() {
 
 	vector<Client *> clients;
@@ -388,8 +286,8 @@ Time RideShare::addTimes(Time time, int tolerance) {
 	Time newTime;
 	if ((time.getMinutes() + tolerance) >= 60) {
 
-		newTime.setHours(time.getHours() + 1);
-		newTime.setMinutes(time.getMinutes() - 60 + tolerance);
+		newTime.setHours(time.getHours() + tolerance % 60);
+		newTime.setMinutes(time.getMinutes() + tolerance - (tolerance % 60)*60);
 	} else {
 
 		newTime.setHours(time.getHours());
@@ -405,12 +303,6 @@ Time RideShare::addTimes(Time time, int tolerance) {
 
 int RideShare::differenceBetweenTimes(Time time1, Time time2) {
 
-	if (time1.getHours() == time2.getHours()) {
-
-		return time1.getMinutes() - time2.getMinutes();
-	} else {
-
-		return 60 - (time2.getMinutes() - time1.getMinutes());
-	}
+	return abs((time1.getHours() - time2.getHours()))*60 + (time1.getMinutes() - time2.getMinutes());
 }
 #endif /* RIDESHARE_CPP_ */

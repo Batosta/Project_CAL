@@ -26,6 +26,7 @@ Request::Request(RideShare * rideshare, Client * client, Time time,
 	this->toleranceTime = toleranceTime;
 }
 
+
 //Get Methods
 Client * Request::getClient() const {
 
