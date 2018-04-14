@@ -27,6 +27,7 @@ public:
 	int getSimpleTime() const;
 	int getToleranceTime() const;
 	int getUniqueRequestID() const;
+	bool getAdded() const;
 
 	void setClient(Client * client);
 	void setRequestStartPlace(int start);
@@ -34,6 +35,8 @@ public:
 	void setRequestDepartureTime(Time time);
 	void setSimpleTime(int time);
 	void setToleranceTime(int time);
+
+	void setAdded(bool added);
 
 	std::string showInfo() const;
 
@@ -46,6 +49,7 @@ private:
 	int requestEndPlace;
 	int simpleTime;
 	int toleranceTime;
+	bool added;
 	int uniqueRequestID;
 	static int idRequest_provider;
 };

@@ -787,6 +787,16 @@ void manageAllTravels(){
 
 		for(auto itt = travels.begin(); itt != travels.end(); itt++){
 
+			//check if request is in ANY travel
+			if((*itr)->getAdded()==true)
+				continue;
+
+			//check if client is already in this travel  			necessary??
+			for(int i = 0 ; i < (*itt)->getAllClientsGoing().size() ; i++){
+				if((*itr)->getClient()->getUniqueClientID() == (*itt)->getAllClientsGoing().at(i)->getUniqueClientID())
+					continue;
+			}
+
 			//Driver can not drive himself
 			if((*itt)->getTravelDriver()->getUniqueClientID() == (*itr)->getClient()->getUniqueClientID()) {
 				continue;
@@ -807,10 +817,8 @@ void manageAllTravels(){
 
 				dests.push_back((*itt)->getAllDests().at(g));
 			}
-
 			sources.push_back((*itr)->getRequestStartPlace());
 			dests.push_back((*itr)->getRequestEndPlace());
-
 			vector<int> path = bestPathWithAllNodes(bestPath(sources, dests));
 
 			//temporal restrictions
@@ -837,6 +845,8 @@ void manageAllTravels(){
 			(*itt)->addSource((*itr)->getRequestStartPlace());
 			(*itt)->addDest((*itr)->getRequestEndPlace());
 			(*itt)->setCurrentPath(path);
+			(*itt)->addRequest(*itr);
+
 		}
 	}
 
@@ -856,6 +866,8 @@ vector<int> bestPath(vector<int> sources, vector<int> dests) {
 
 	for (size_t j = 0; j < (sources.size() - 1) * 2; j++) {
 
+		vector<int> path;
+		vector<int> minpath;
 		for (size_t t = 1; t < dests.size(); t++) {
 
 			//check if this element has been used in sources
@@ -887,7 +899,6 @@ vector<int> bestPath(vector<int> sources, vector<int> dests) {
 			int size = lastPath.size();
 			rideShare->getGraph().dijkstraShortestPath(lastPath.at(size - 1));
 
-			vector<int> path;
 			if ((sourceUsed == false) && (destUsed == false)) {	//using sources
 
 				int value = lastPath.size() - 1;
@@ -911,13 +922,15 @@ vector<int> bestPath(vector<int> sources, vector<int> dests) {
 				minT = t;
 				minSourceUsed = sourceUsed;
 				minDestUsed = destUsed;
+				minpath=path;
 			}
+
 		}
 
 
 		if ((minSourceUsed == false) && (minDestUsed == false)) {
 
-			usedDests.push_back(sources.at(minT));
+			usedSources.push_back(sources.at(minT));
 			lastPath.push_back(sources.at(minT));
 		} else if ((minSourceUsed == true) && (minDestUsed == false)) {
 
@@ -928,12 +941,13 @@ vector<int> bestPath(vector<int> sources, vector<int> dests) {
 		minDistance = INT_MAX;
 	}
 
+	rideShare->getGraph().dijkstraShortestPath(lastPath.at(lastPath.size() - 1));
+	vector<int> tempPath = rideShare->getGraph().getPath(lastPath.at(lastPath.size() - 1), dests.at(0));
 	lastPath.push_back(dests.at(0));
 	return lastPath;
 }
 
 vector<int> bestPathWithAllNodes(vector<int> path) {
-
 	vector<int> fullPath;
 	for (size_t t = 0; t < path.size() - 1; t++) {
 
@@ -946,7 +960,7 @@ vector<int> bestPathWithAllNodes(vector<int> path) {
 		}
 	}
 
-	fullPath.push_back(path.size() - 1);
+	fullPath.push_back(path.at(path.size() - 1));
 
 	return fullPath;
 }

@@ -24,6 +24,7 @@ Request::Request(RideShare * rideshare, Client * client, Time time,
 	this->requestEndPlace = requestEndPlace;
 	this->simpleTime = simpleTime;
 	this->toleranceTime = toleranceTime;
+	this->added = false;
 }
 
 
@@ -57,6 +58,11 @@ int Request::getUniqueRequestID() const {
 	return this->uniqueRequestID;
 }
 
+bool Request::getAdded() const{
+	return this->added;
+}
+
+
 //Set Methods
 void Request::setClient(Client * client) {
 
@@ -81,6 +87,10 @@ void Request::setSimpleTime(int time) {
 void Request::setToleranceTime(int time) {
 
 	this->toleranceTime = time;
+}
+
+void Request::setAdded(bool added){
+	this->added = added;
 }
 
 string Request::showInfo() const {

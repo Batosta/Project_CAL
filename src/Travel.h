@@ -21,6 +21,7 @@ public:
 			Time time, int tolerance, int travelStartPlace, int travelEndPlace, int simpleTime, std::vector<int> path);
 
 	Client * getTravelDriver() const;
+	std::vector<Request *> getAllRequests() const;
 	std::vector<Client *> getAllClientsGoing() const;
 	std::vector<int> getAllSources() const;
 	std::vector<int> getAllDests() const;
@@ -48,6 +49,7 @@ public:
 	void setCurrentPath(std::vector<int> path);
 
 	void addClient(Client * client);
+	void addRequest(Request * request);
 	void addSource(int source);
 	void addDest(int dest);
 	std::string showInfo() const;
@@ -57,6 +59,7 @@ private:
 	RideShare * rideshare;
 	Client * driver;
 	std::vector<Client *> allClientsGoing;
+	std::vector<Request *> allRequests;
 	std::vector<int> sources;
 	std::vector<int> dests;
 	std::vector<int> originalPath;

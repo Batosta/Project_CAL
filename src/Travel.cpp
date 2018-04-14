@@ -11,8 +11,8 @@ Travel::Travel() {
 
 }
 Travel::Travel(RideShare * rideShare, int availableSeats, Client * driver,
-		Time time, int tolerance, int simpleTime, int travelStartPlace,
-		int travelEndPlace, vector<int> path) :
+		Time time, int tolerance, int travelStartPlace,
+		int travelEndPlace, int simpleTime, vector<int> path) :
 		uniqueTravelID(++idTravel_provider) {
 
 	this->rideshare = rideShare;
@@ -20,6 +20,8 @@ Travel::Travel(RideShare * rideShare, int availableSeats, Client * driver,
 	this->driver = driver;
 	vector<Client *> clients;
 	this->allClientsGoing = clients;
+	vector<Request *> requests;
+	this->allRequests = requests;
 	vector<int> sources;
 	this->sources = sources;
 	vector<int> dests;
@@ -53,6 +55,10 @@ int Travel::getTravelEndPlace() const {
 Client * Travel::getTravelDriver() const {
 
 	return this->driver;
+}
+vector<Request *> Travel::getAllRequests() const {
+
+	return this->allRequests;
 }
 vector<Client *> Travel::getAllClientsGoing() const {
 
@@ -140,6 +146,11 @@ void Travel::setCurrentPath(vector<int> path) {
 void Travel::addClient(Client * client){
 
 	this->allClientsGoing.push_back(client);
+}
+
+void Travel::addRequest(Request * r){
+	r->setAdded(true);
+	this->allRequests.push_back(r);
 }
 
 void Travel::addSource(int source){
