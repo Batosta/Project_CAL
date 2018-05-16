@@ -33,6 +33,7 @@ public:
 	bool existsClientID(int clientID);
 	bool existsTravelID(int travelID);
 	bool existsNodeID(int nodeID);
+	bool existsNodeName(std::string str);
 
 	void setClients(std::vector<Client *> clients);
 	void setTravels(std::vector<Travel *> travels);
@@ -40,7 +41,7 @@ public:
 	void addClient(Client * newClient);
 	void addTravel(Travel * newTravel);
 	void addRequest(Request * newRequest);
-	void addNode(int ID, int x, int y);
+	void addNode(int ID, int x, int y, std::string name);
 	void addEdge(int originID, int destID, int direction);
 
 	bool removeClient(int uniqueID);
@@ -60,6 +61,9 @@ public:
 
 	Time addTimes(Time time, int tolerance);
 	int differenceBetweenTimes(Time time1, Time time2);
+
+	bool kmpStringAlgorithm(string total, string partial);
+	void computePrefixFunction(string str, int m);
 
 private:
 

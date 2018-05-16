@@ -42,6 +42,7 @@ void readNodesFile() {
 
 		int nodeID, xCoordinate, yCoordinate;
 		char garbage;
+		string nodeName;
 
 		infoNode >> nodeID;
 		infoNode >> garbage;
@@ -52,9 +53,11 @@ void readNodesFile() {
 		infoNode >> yCoordinate;
 		infoNode >> garbage;
 
+		getline(infoNode, nodeName, ';');
+
 		gv->addNode(nodeID, xCoordinate, yCoordinate);
-		gv->setVertexLabel(nodeID, to_string(nodeID));
-		rideShare->addNode(nodeID, xCoordinate, yCoordinate); //colocar todos os Vertex no vertexSet do Graph
+		gv->setVertexLabel(nodeID, nodeName);
+		rideShare->addNode(nodeID, xCoordinate, yCoordinate, nodeName); //colocar todos os Vertex no vertexSet do Graph
 	}
 	file.close();
 }
@@ -99,7 +102,7 @@ void readEdgesFile() {
 			gv->addEdge(roadID, nodeID1, nodeID2, EdgeType::DIRECTED);
 		}
 
-		gv->setEdgeLabel(roadID, roadName);
+		//gv->setEdgeLabel(roadID, roadName);
 	}
 	file.close();
 }

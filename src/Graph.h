@@ -20,6 +20,7 @@ class Vertex {
 	T info;
 	vector<Edge<T> > adj;
 	int xCoordinate, yCoordinate;
+	string vertexName;
 	bool visited;
 	bool processing;
 	int indegree;
@@ -31,7 +32,7 @@ class Vertex {
 	void addEdge(Vertex<T> *dest, double w);
 	bool removeEdgeTo(Vertex<T> *d);
 public:
-	Vertex(T in, int xCo, int yCo);
+	Vertex(T in, int xCo, int yCo, string name);
 	friend class Graph<T> ;
 	bool operator<(Vertex<T> & vertex) const; 					// required by MutablePriorityQueue
 
@@ -44,6 +45,7 @@ public:
 	double getDist() const;
 	int getXCoordinate() const;
 	int getYCoordinate() const;
+	string getVertexName() const;
 	Vertex *getPath() const;
 	vector<Edge<T> > getAdj() const;
 	friend class MutablePriorityQueue<Vertex<T>> ;
@@ -99,6 +101,11 @@ int Vertex<T>::getYCoordinate() const {
 
 	return this->yCoordinate;
 }
+template<class T>
+string Vertex<T>::getVertexName() const {
+
+	return this->vertexName;
+}
 
 template<class T>
 void Vertex<T>::setDist(double d) {
@@ -121,6 +128,7 @@ void Vertex<T>::showVertexInfo() const {
 	cout << "Node nº " << to_string(this->info) << endl;
 	cout << "\t -Coordinate x: " << to_string(this->xCoordinate) << endl;
 	cout << "\t -Coordinate y: " << to_string(this->yCoordinate) << endl;
+	cout << "\t -Road Name: " << this->vertexName << endl;
 	cout << "\t -All Adjacent Nodes: ";
 
 	if(this->adj.size() == 0)
@@ -191,7 +199,7 @@ class Graph {
 public:
 	int getNumVertex() const;
 	vector<Vertex<T> *> getVertexSet() const;
-	bool addVertex(const T &in, int xCoordinate, int yCoordinate);
+	bool addVertex(const T &in, int xCoordinate, int yCoordinate, string name);
 	bool removeVertex(const T &in);
 	bool addEdge(const T &sourc, const T &dest);
 	bool removeEdge(const T &sourc, const T &dest);
@@ -210,8 +218,8 @@ public:
 };
 
 template<class T>
-Vertex<T>::Vertex(T in, int xCo, int yCo) :
-		info(in), xCoordinate(xCo), yCoordinate(yCo) {
+Vertex<T>::Vertex(T in, int xCo, int yCo, string name) :
+		info(in), xCoordinate(xCo), yCoordinate(yCo), vertexName(name) {
 }
 
 template<class T>
@@ -239,14 +247,14 @@ Vertex<T> * Graph<T>::findVertex(const T &in) const {
 }
 
 template<class T>
-bool Graph<T>::addVertex(const T &in, int xCoordinate, int yCoordinate) {
+bool Graph<T>::addVertex(const T &in, int xCoordinate, int yCoordinate, string name) {
 
 	auto v1 = findVertex(in);
 
 	if (v1 != NULL)
 		return false;
 
-	vertexSet.push_back(new Vertex<T>(in, xCoordinate, yCoordinate));
+	vertexSet.push_back(new Vertex<T>(in, xCoordinate, yCoordinate, name));
 
 	return false;
 }

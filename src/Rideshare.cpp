@@ -82,6 +82,20 @@ bool RideShare::existsNodeID(int nodeID) {
 	}
 	return false;
 }
+bool RideShare::existsNodeName(string str){
+
+	int i = 0;
+	for (auto it = this->graph.getVertexSet().begin();
+			it != this->graph.getVertexSet().end(); it++) {
+
+		if (i > 1) {
+			if (kmpStringAlgorithm((*it)->getVertexName(), str))
+				return true;
+		}
+		i++;
+	}
+	return false;
+}
 
 void RideShare::setClients(vector<Client *> clients) {
 
@@ -104,9 +118,9 @@ void RideShare::addRequest(Request * newRequest) {
 
 	this->allRequests.push_back(newRequest);
 }
-void RideShare::addNode(int ID, int x, int y) {
+void RideShare::addNode(int ID, int x, int y, string name) {
 
-	this->graph.addVertex(ID, x, y);
+	this->graph.addVertex(ID, x, y, name);
 }
 void RideShare::addEdge(int originID, int destID, int direction) {
 
@@ -305,4 +319,21 @@ int RideShare::differenceBetweenTimes(Time time1, Time time2) {
 
 	return abs((time1.getHours() - time2.getHours()))*60 + (time1.getMinutes() - time2.getMinutes());
 }
+
+bool RideShare::kmpStringAlgorithm(string total, string partial){		//Algorithm for exact string search
+
+	int m = partial.length();
+	int pi[m];
+	computePrefixFunction(partial, m, pi);
+}
+
+void RideShare::computePrefixFunction(string str, int m, int pi){
+
+	int len = 0;		// previous longest prefix suffix
+	int pi[0] = 0;		// first one is always 0
+
+
+
+}
+
 #endif /* RIDESHARE_CPP_ */
