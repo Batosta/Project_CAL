@@ -316,7 +316,6 @@ Time RideShare::addTimes(Time time, int tolerance) {
 
 	return newTime;
 }
-
 int RideShare::differenceBetweenTimes(Time time1, Time time2) {
 
 	return abs((time1.getHours() - time2.getHours()))*60 + (time1.getMinutes() - time2.getMinutes());
