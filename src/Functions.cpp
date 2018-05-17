@@ -307,7 +307,8 @@ void seeAllSomething(string str) {
 
 void findFastestRoute() {
 
-	string tempID;
+	string sourcename;
+	string destinyname;
 	int sourceID, destID;
 
 	cout << endl << endl;
@@ -318,33 +319,36 @@ void findFastestRoute() {
 	cin.clear();
 	cin.ignore(10000, '\n');
 
-	cout << "Insert the ID of the source node: ";
-	getline(cin, tempID);
-	if (!is_number(tempID)) {
-		cout << "Not an integer.\n" << endl;
-		return;
-	}
-	sourceID = stoi(tempID);
-	if (!rideShare->existsNodeID(sourceID)) {
-		cout << "\nThere is no Node with the ID: " << sourceID << endl;
+	cout << "Insert the name of the source place: ";
+	getline(cin, sourcename);
+//	if (!is_number(tempID)) {
+//		cout << "Not an integer.\n" << endl;
+//		return;
+//	}
+//	sourceID = stoi(tempID);
+	vector<string> foundPlaces;
+	if (!rideShare->existsNodeName(sourcename)) {
+		cout << "\nThere is no place with the name: " << sourcename << endl;
 		return;
 	}
 
-	cout << "Insert the ID of the destiny node: ";
-	getline(cin, tempID);
-	if (!is_number(tempID)) {
-		cout << "Not an integer.\n" << endl;
+	cout << "ENCONTROU";
+exit(1);
+	cout << "Insert the name of the destiny place: ";
+	getline(cin, destinyname);
+//	if (!is_number(tempID)) {
+//		cout << "Not an integer.\n" << endl;
+//		return;
+//	}
+//	destID = stoi(tempID);
+	if (destinyname == sourcename) {
+		cout << "\nThe source and destiny place can not be the same. " << endl;
 		return;
 	}
-	destID = stoi(tempID);
-	if (destID == sourceID) {
-		cout << "\nThe source and destiny ID can not be the same. " << endl;
-		return;
-	}
-	if (!rideShare->existsNodeID(destID)) {
-		cout << "\nThere is no Node with the ID: " << destID << endl;
-		return;
-	}
+//	if (!rideShare->existsNodeName(destinyname)) {
+//		cout << "\nThere is no Node with the name: " << destinyname << endl;
+//		return;
+//	}
 
 	vector<int> path = rideShare->getFastestRoute(sourceID, destID);
 	showRouteMap(path);

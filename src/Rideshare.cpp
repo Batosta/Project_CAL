@@ -89,7 +89,9 @@ bool RideShare::existsNodeName(string str){
 			it != this->graph.getVertexSet().end(); it++) {
 
 		if (i > 1) {
+			cout << (*it)->getVertexName() << endl;
 			if (kmpStringAlgorithm((*it)->getVertexName(), str))
+
 				return true;
 		}
 		i++;
@@ -323,17 +325,76 @@ int RideShare::differenceBetweenTimes(Time time1, Time time2) {
 bool RideShare::kmpStringAlgorithm(string total, string partial){		//Algorithm for exact string search
 
 	int m = partial.length();
+	int n = total.length();
 	int pi[m];
-	computePrefixFunction(partial, m, pi);
+
+	computePrefixFunction(partial, pi);
+
+    int i = 0;  // index for total[] string
+    int j  = 0;  // index for partial[] string
+    while (i < n)
+    {
+    	cout << total[i] << endl;
+        if (tolower(partial[j]) ==  tolower(total[i]))	//case insnsitive		o codigo ASCII das minusculas é o das maiusculas + 32
+        {
+            j++;
+            i++;
+        }
+
+        if (j == m)
+        {
+        	return 1;
+        }
+
+        // mismatch after j matches
+        else if (i < n && tolower(partial[j]) != tolower(total[i]))
+        {
+            if (j != 0)
+                j = pi[j-1];
+            else
+                i = i+1;
+        }
+    }
+    return 0;
 }
 
-void RideShare::computePrefixFunction(string str, int m, int pi){
+void RideShare::computePrefixFunction(string partial, int *pi){
 
-	int len = 0;		// previous longest prefix suffix
-	int pi[0] = 0;		// first one is always 0
+	int m = partial.length();
+	// length of the previous longest prefix suffix
+	    int len = 0;
 
+	    pi[0] = 0; // lps[0] is always 0
 
+	    // the loop calculates lps[i] for i = 1 to M-1
+	    int i = 1;
+	    while (i < m)
+	    {
+	        if (tolower(partial[i]) == tolower(partial[len]))
+	        {
+	            len++;
+	            pi[i] = len;
+	            i++;
+	        }
+	        else // (pat[i] != pat[len])
+	        {
+	            // This is tricky. Consider the example.
+	            // AAACAAAA and i = 7. The idea is similar
+	            // to search step.
+	            if (len != 0)
+	            {
+	                len = pi[len-1];
 
+	                // Also, note that we do not increment
+	                // i here
+	            }
+	            else // if (len == 0)
+	            {
+	                pi[i] = 0;
+	                i++;
+	            }
+	        }
+	    }
 }
 
 #endif /* RIDESHARE_CPP_ */

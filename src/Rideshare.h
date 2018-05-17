@@ -11,6 +11,7 @@
 #include <queue>
 #include <math.h>
 
+
 #include "Travel.h"
 #include "Client.h"
 #include "Request.h"
@@ -63,7 +64,7 @@ public:
 	int differenceBetweenTimes(Time time1, Time time2);
 
 	bool kmpStringAlgorithm(string total, string partial);
-	void computePrefixFunction(string str, int m);
+	void computePrefixFunction(string str, int *pi);
 
 private:
 
