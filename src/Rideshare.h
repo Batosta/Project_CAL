@@ -11,7 +11,6 @@
 #include <queue>
 #include <math.h>
 
-
 #include "Travel.h"
 #include "Client.h"
 #include "Request.h"
@@ -30,11 +29,12 @@ public:
 	Graph<int> getGraph() const;
 	Client * getClientByID(int clientID);
 	Travel * getTravelByID(int travelID);
+	int getIdByName(std::string str);
 
 	bool existsClientID(int clientID);
 	bool existsTravelID(int travelID);
 	bool existsNodeID(int nodeID);
-	bool existsNodeName(std::string str);
+	vector<std::string> existsNodeName(std::string str);
 
 	void setClients(std::vector<Client *> clients);
 	void setTravels(std::vector<Travel *> travels);
@@ -64,7 +64,8 @@ public:
 	int differenceBetweenTimes(Time time1, Time time2);
 
 	bool kmpStringAlgorithm(string total, string partial);
-	void computePrefixFunction(string str, int *pi);
+	void computePrefixFunction(string partial, int *pi);
+	int editDistanceAlgorithm(string pat, string txt);
 
 private:
 
