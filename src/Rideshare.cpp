@@ -49,6 +49,15 @@ Travel * RideShare::getTravelByID(int traveltID) {
 	}
 	return NULL;
 }
+int RideShare::getIdByName(std::string str){
+
+	for	(auto it = this->getGraph().getVertexSet().begin(); it != this->getGraph().getVertexSet().end(); it++){
+
+		if((*it)->getVertexName() == str)
+			return (*it)->getInfo();
+	}
+	return NULL;
+}
 
 bool RideShare::existsClientID(int clientID) {
 
@@ -82,21 +91,29 @@ bool RideShare::existsNodeID(int nodeID) {
 	}
 	return false;
 }
-bool RideShare::existsNodeName(string str){
+vector<string> RideShare::existsNodeName(string str){
 
+	vector<string> v;
 	int i = 0;
+	cout << "cona1\n";
 	for (auto it = this->graph.getVertexSet().begin();
 			it != this->graph.getVertexSet().end(); it++) {
+		cout << "cona2\n" << i;
 
 		if (i > 1) {
+			cout << "cona3" << endl;
 			cout << (*it)->getVertexName() << endl;
-			if (kmpStringAlgorithm((*it)->getVertexName(), str))
-
-				return true;
+			cout << "cona3" << endl;
+			if(kmpStringAlgorithm((*it)->getVertexName(), str)){
+				cout << v.size() << endl;
+				v.push_back((*it)->getVertexName());
+			}
 		}
+		cout << "cona4\n";
 		i++;
 	}
-	return false;
+
+	return v;
 }
 
 void RideShare::setClients(vector<Client *> clients) {
@@ -316,12 +333,13 @@ Time RideShare::addTimes(Time time, int tolerance) {
 
 	return newTime;
 }
+
 int RideShare::differenceBetweenTimes(Time time1, Time time2) {
 
 	return abs((time1.getHours() - time2.getHours()))*60 + (time1.getMinutes() - time2.getMinutes());
 }
 
-bool RideShare::kmpStringAlgorithm(string total, string partial){		//Algorithm for exact string search
+bool RideShare::kmpStringAlgorithm(string total, string partial) { //Algorithm for exact string search
 
 	int m = partial.length();
 	int n = total.length();
@@ -329,71 +347,101 @@ bool RideShare::kmpStringAlgorithm(string total, string partial){		//Algorithm f
 
 	computePrefixFunction(partial, pi);
 
-    int i = 0;  // index for total[] string
-    int j  = 0;  // index for partial[] string
-    while (i < n)
-    {
-    	cout << total[i] << endl;
-        if (tolower(partial[j]) ==  tolower(total[i]))	//case insnsitive		o codigo ASCII das minusculas é o das maiusculas + 32
-        {
-            j++;
-            i++;
-        }
+	int i = 0;  // index for total[] string
+	int j = 0;  // index for partial[] string
+	while (i < n) {
 
-        if (j == m)
-        {
-        	return 1;
-        }
+		if (tolower(partial[j]) == tolower(total[i])){ //case insensitive    o codigo ASCII das minusculas é o das maiusculas + 32
 
-        // mismatch after j matches
-        else if (i < n && tolower(partial[j]) != tolower(total[i]))
-        {
-            if (j != 0)
-                j = pi[j-1];
-            else
-                i = i+1;
-        }
-    }
-    return 0;
+			j++;
+			i++;
+		}
+
+		if (j == m) {
+
+			return true;
+		}
+
+		// mismatch after j matches
+		else if (i < n && tolower(partial[j]) != tolower(total[i])) {
+			if (j != 0)
+				j = pi[j - 1];
+			else
+				i = i + 1;
+		}
+	}
+	return false;
 }
 
-void RideShare::computePrefixFunction(string partial, int *pi){
+void RideShare::computePrefixFunction(string partial, int *pi) {
 
 	int m = partial.length();
 	// length of the previous longest prefix suffix
-	    int len = 0;
+	int len = 0;
 
-	    pi[0] = 0; // lps[0] is always 0
+	pi[0] = 0; // lps[0] is always 0
 
-	    // the loop calculates lps[i] for i = 1 to M-1
-	    int i = 1;
-	    while (i < m)
-	    {
-	        if (tolower(partial[i]) == tolower(partial[len]))
-	        {
-	            len++;
-	            pi[i] = len;
-	            i++;
-	        }
-	        else // (pat[i] != pat[len])
-	        {
-	            // This is tricky. Consider the example.
-	            // AAACAAAA and i = 7. The idea is similar
-	            // to search step.
-	            if (len != 0)
-	            {
-	                len = pi[len-1];
+	// the loop calculates lps[i] for i = 1 to M-1
+	int i = 1;
+	while (i < m) {
+		if (tolower(partial[i]) == tolower(partial[len])) {
+			len++;
+			pi[i] = len;
+			i++;
+		} else // (pat[i] != pat[len])
+		{
+			// This is tricky. Consider the example.
+			// AAACAAAA and i = 7. The idea is similar
+			// to search step.
+			if (len != 0) {
+				len = pi[len - 1];
 
-	                // Also, note that we do not increment
-	                // i here
-	            }
-	            else // if (len == 0)
-	            {
-	                pi[i] = 0;
-	                i++;
-	            }
-	        }
-	    }
+				// Also, note that we do not increment
+				// i here
+			} else // if (len == 0)
+			{
+				pi[i] = 0;
+				i++;
+			}
+		}
+	}
+}
+
+
+int RideShare::editDistanceAlgorithm(string pat, string txt){
+
+	int n = txt.length();
+	int m = pat.length();
+	int after, before;
+	int d[n+1];
+
+	for (int i = 0; i < n + 1; i++) {
+
+		d[i] = i;
+	}
+
+	for (int i = 1; i < m + 1; i++) {
+
+		before = d[0];
+		d[0] = i;
+
+		for(int k = 1; k < n+1; k++){
+
+			if(pat[i - 1] == txt[k - 1]){
+
+				after = before;
+			} else{
+
+				after = min(before, d[k]);
+				after = 1 + min(after, d[k-1]);
+			}
+
+			before = d[k];
+			d[k] = after;
+		}
+	}
+
+	return d[n];
 }
 
 #endif /* RIDESHARE_CPP_ */
