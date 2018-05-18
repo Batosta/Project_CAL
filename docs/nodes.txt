@@ -6,7 +6,7 @@
 4;247;733;Viaduto;
 5;270;534;Rotunda da Nossa;
 6;378;522;Hospital da Luz;
-7;420;349;Cafe Delicias;
+7;420;349;Loja Delicias;
 8;445;156;Yogurice;
 9;223;91;Barbearia Moderna;
 10;205;321;Igreja da Nossa;

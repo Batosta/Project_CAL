@@ -50,13 +50,35 @@ Travel * RideShare::getTravelByID(int traveltID) {
 	return NULL;
 }
 int RideShare::getIdByName(std::string str){
+int i = 0;
 
 	for	(auto it = this->getGraph().getVertexSet().begin(); it != this->getGraph().getVertexSet().end(); it++){
 
-		if((*it)->getVertexName() == str)
-			return (*it)->getInfo();
+		if(i>1){
+			if((*it)->getVertexName() == str){
+
+				return (*it)->getInfo();
+			}
+		}
+		i++;
 	}
-	return NULL;
+	return -1;
+}
+
+string RideShare::getNamebyId(int id){
+int i = 0;
+
+	for	(auto it = this->getGraph().getVertexSet().begin(); it != this->getGraph().getVertexSet().end(); it++){
+
+		if(i>1){
+			if((*it)->getInfo() == id){
+
+				return (*it)->getVertexName();
+			}
+		}
+		i++;
+	}
+	return "";
 }
 
 bool RideShare::existsClientID(int clientID) {
@@ -91,8 +113,8 @@ bool RideShare::existsNodeID(int nodeID) {
 	}
 	return false;
 }
-vector<string> RideShare::existsNodeName(string str){
 
+vector<string> RideShare::existsNodeName(string str){
 	vector<string> v;
 	int i = 0;
 	cout << "cona1\n";
@@ -101,15 +123,17 @@ vector<string> RideShare::existsNodeName(string str){
 		cout << "cona2\n" << i;
 
 		if (i > 1) {
-			cout << "cona3" << endl;
+			cout << "cona3 size:" << this->graph.getVertexSet().size() << endl;
 			cout << (*it)->getVertexName() << endl;
+			cout << (*it)->getInfo() << endl;
 			cout << "cona3" << endl;
 			if(kmpStringAlgorithm((*it)->getVertexName(), str)){
-				cout << v.size() << endl;
+
 				v.push_back((*it)->getVertexName());
+				cout << "vsize" << v.size() << endl;
 			}
 		}
-		cout << "cona4\n";
+		cout << i << endl;
 		i++;
 	}
 
@@ -139,6 +163,7 @@ void RideShare::addRequest(Request * newRequest) {
 }
 void RideShare::addNode(int ID, int x, int y, string name) {
 
+	cout << "inside addnode. id: " << ID << "name:" << name << endl;
 	this->graph.addVertex(ID, x, y, name);
 }
 void RideShare::addEdge(int originID, int destID, int direction) {
@@ -281,7 +306,7 @@ int RideShare::getDistanceRoute(int source, int dest) {
 }
 vector<int> RideShare::getFastestRoute(int source, int dest) {
 
-	cout << "\nTo go from the node nº " << source << " to the node nº " << dest
+	cout << "\nTo go from: " << (*this->getGraph().getVertexSet().at(source+1)).getVertexName() << " to " << (*this->getGraph().getVertexSet().at(dest+1)).getVertexName()
 			<< ": ";
 
 	this->graph.dijkstraShortestPath(source);
@@ -339,8 +364,9 @@ int RideShare::differenceBetweenTimes(Time time1, Time time2) {
 	return abs((time1.getHours() - time2.getHours()))*60 + (time1.getMinutes() - time2.getMinutes());
 }
 
-bool RideShare::kmpStringAlgorithm(string total, string partial) { //Algorithm for exact string search
+bool RideShare::kmpStringAlgorithm(const string total,const string partial) { //Algorithm for exact string search
 
+	cout << "cona5" << endl;
 	int m = partial.length();
 	int n = total.length();
 	int pi[m];

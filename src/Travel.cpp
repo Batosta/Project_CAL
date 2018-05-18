@@ -11,8 +11,8 @@ Travel::Travel() {
 
 }
 Travel::Travel(RideShare * rideShare, int availableSeats, Client * driver,
-		Time time, int tolerance, int travelStartPlace,
-		int travelEndPlace, int simpleTime, vector<int> path) :
+		Time time, int tolerance, int simpleTime, int travelStartPlace,
+		int travelEndPlace, vector<int> path) :
 		uniqueTravelID(++idTravel_provider) {
 
 	this->rideshare = rideShare;
@@ -181,7 +181,7 @@ string Travel::showInfo() const {
 
 	info += to_string(this->travelDepartureTime.getMinutes()) + "\n"
 			+ "\t -Tolerance Time: " + to_string(this->toleranceTime) + "\n"
-			+ "\t -Start Point: " + to_string(this->travelStartPlace) + "\n"
+			+ "\t -Start Point: " + this->rideshare->getNamebyId(this->travelStartPlace) + "\n"
 			+ "\t -End Point: " + to_string(this->travelEndPlace) + "\n"
 			+ "\t -Available Seats: " + to_string(this->allClientsGoing.size())
 			+ "/" + to_string(this->availableSeats) + "\n"
@@ -194,7 +194,7 @@ string Travel::showInfo() const {
 	for (size_t t = 0; t < this->allClientsGoing.size(); t++) {
 
 		if (t == (this->allClientsGoing.size() - 1)) {
-			info += this->allClientsGoing.at(t)->getName();
+			info += (this->allClientsGoing.at(t)->getName());
 			break;
 		}
 		info += this->allClientsGoing.at(t)->getName() + ", ";

@@ -30,6 +30,7 @@ public:
 	Client * getClientByID(int clientID);
 	Travel * getTravelByID(int travelID);
 	int getIdByName(std::string str);
+	std::string getNamebyId(int id);
 
 	bool existsClientID(int clientID);
 	bool existsTravelID(int travelID);

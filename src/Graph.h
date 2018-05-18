@@ -167,7 +167,6 @@ template<class T>
 class Edge {
 	Vertex<T> * dest;      // destination vertex
 	Vertex<T> * orig;
-	string edgeName;
 	double weight;         // edge weight
 public:
 	Edge(Vertex<T> *d, double w);
@@ -253,6 +252,8 @@ bool Graph<T>::addVertex(const T &in, int xCoordinate, int yCoordinate, string n
 
 	if (v1 != NULL)
 		return false;
+
+	cout << "inside addvertex. id: " << in << "name:" << name << endl;
 
 	vertexSet.push_back(new Vertex<T>(in, xCoordinate, yCoordinate, name));
 

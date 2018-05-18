@@ -18,7 +18,7 @@ public:
 
 	Travel();
 	Travel(RideShare * rideshare, int availableSeats, Client * driver,
-			Time time, int tolerance, int travelStartPlace, int travelEndPlace, int simpleTime, std::vector<int> path);
+			Time time, int tolerance, int simpleTime, int travelStartPlace, int travelEndPlace, std::vector<int> path);
 
 	Client * getTravelDriver() const;
 	std::vector<Request *> getAllRequests() const;

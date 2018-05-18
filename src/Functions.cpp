@@ -55,6 +55,8 @@ void readNodesFile() {
 
 		getline(infoNode, nodeName, ';');
 
+		cout << "read nodes: id: " << nodeID << "name: " << nodeName << endl;
+
 		gv->addNode(nodeID, xCoordinate, yCoordinate);
 		gv->setVertexLabel(nodeID, nodeName);
 		rideShare->addNode(nodeID, xCoordinate, yCoordinate, nodeName); //colocar todos os Vertex no vertexSet do Graph
@@ -144,7 +146,7 @@ void readRequestsFile() {
 		Request * newRequest = new Request(rideShare,
 				rideShare->getClientByID(clientID), time, startID, endID,
 				rideShare->getSimpleTimeRoute(startID, endID), tolerance);
-		rideShare->addRequest(newRequest);
+			rideShare->addRequest(newRequest);
 	}
 	file.close();
 }
@@ -321,9 +323,14 @@ void findFastestRoute() {
 
 	cout << "Insert the name of the source place: ";
 	getline(cin, sourceName);
-	cout << "\npilas1\n";
+
+	if(sourceName.size()<=2){
+		cout << "\nPlease insert a name with at least 3 characters" << endl;
+		return;
+	}
+
 	foundPlaces = rideShare->existsNodeName(sourceName);
-	cout << "pilas2\n";
+
 	int n = foundPlaces.size();
 	if (n == 0) {
 
@@ -331,27 +338,33 @@ void findFastestRoute() {
 		return;
 	} else if (n == 1) {
 
-		cout << "\nDid you mean " << foundPlaces[0] << "? (Y/N)";
+		cout << "\nDid you mean " << foundPlaces.at(0) << "? (Y/N)";
 		string answer;
 		getline(cin, answer);
-		if (answer != "Y")
+		if (answer != "Y" && answer != "y" )
 			return;
-		sourceName = foundPlaces[0];
+		sourceName = foundPlaces.at(0);
 	} else {
 
 		cout << "\nWhich of the following places did you mean?\n";
+
 		for (int i = 0; i < n; i++) {
 
-			cout << i << " - " << foundPlaces[i] << endl;
+			cout << i << " - " << foundPlaces.at(i) << endl;
 		}
+
 		cout << "Choose one of the numbers: ";
 		string tempNumber;
+
 		getline(cin, tempNumber);
+
 		if (!is_number(tempNumber)) {
 			cout << "Not an integer.\n" << endl;
 			return;
 		}
+
 		int number = stoi(tempNumber);
+
 		if (number < 0 || number > n) {
 			cout << "Not in range number.\n" << endl;
 			return;
@@ -361,19 +374,30 @@ void findFastestRoute() {
 
 
 	cout << "Insert the name of the destiny place: ";
+
 	getline(cin, destinyName);
+
+	if(destinyName.size()<=2){
+		cout << "\nPlease insert a name with at least 3 characters" << endl;
+		return;
+	}
+
 	foundPlaces = rideShare->existsNodeName(destinyName);
+
 	n = foundPlaces.size();
 	if (n == 0) {
 
 		cout << "\nThere is no place with the name: " << destinyName << endl;
+
 		return;
 	} else if (n == 1) {
 
-		cout << "\nDid you mean " << foundPlaces[0] << "? (Y/N)";
+		cout << "\nDid you mean " << foundPlaces.at(0) << "? (Y/N)";
+
 		string answer;
 		getline(cin, answer);
-		if (answer != "Y")
+
+		if (answer != "Y" && answer != "y")
 			return;
 		destinyName = foundPlaces[0];
 	} else {
@@ -386,32 +410,39 @@ void findFastestRoute() {
 		cout << "Choose one of the numbers: ";
 		string tempNumber;
 		getline(cin, tempNumber);
+
 		if (!is_number(tempNumber)) {
 			cout << "Not an integer.\n" << endl;
 			return;
 		}
+
 		int number = stoi(tempNumber);
 		if (number < 0 || number > n) {
 			cout << "Not in range number.\n" << endl;
 			return;
 		}
-		destinyName = foundPlaces[number];
+		destinyName = foundPlaces.at(number);
 	}
+
 
 	int sourceID = rideShare->getIdByName(sourceName);
 	int destID = rideShare->getIdByName(destinyName);
+	cout << "course name: " << (*rideShare->getGraph().getVertexSet().at(sourceID+1)).getVertexName() << endl;
 
 	if (sourceID == destID) {
 		cout << "\nThe source and destiny place can not be the same. " << endl;
 		return;
 	}
 
+	cout << "test xixi \n";
 	vector<int> path = rideShare->getFastestRoute(sourceID, destID);
 	showRouteMap(path);
 }
 void findFastestRouteThroughPoints() {
 
-	string tempNumber;
+	string sourceName;
+	string destinyName;
+	vector<string> foundPlaces;
 	int sourceID, destID, numberPoints, middlePointID;
 	vector<int> middlePoints;
 
@@ -423,18 +454,58 @@ void findFastestRouteThroughPoints() {
 	cin.clear();
 	cin.ignore(10000, '\n');
 
-	cout << "Insert the ID of the source node: ";
-	getline(cin, tempNumber);
-	if (!is_number(tempNumber)) {
-		cout << "Not an integer.\n" << endl;
-		return;
-	}
-	sourceID = stoi(tempNumber);
-	if (!rideShare->existsNodeID(sourceID)) {
-		cout << "\nThere is no Node with the ID: " << sourceID << endl;
-		return;
-	}
-	middlePoints.push_back(sourceID);
+	cout << "Insert the name of the source place: ";
+		getline(cin, sourceName);
+
+		if(sourceName.size()<=2){
+			cout << "\nPlease insert a name with at least 3 characters" << endl;
+			return;
+		}
+
+
+		foundPlaces = rideShare->existsNodeName(sourceName);
+
+		int n = foundPlaces.size();
+		if (n == 0) {
+
+			cout << "\nThere is no place with the name: " << sourceName << endl;
+			return;
+		} else if (n == 1) {
+
+			cout << "\nDid you mean " << foundPlaces.at(0) << "? (Y/N)";
+			string answer;
+			getline(cin, answer);
+			if (answer != "Y" && answer != "y" )
+				return;
+			sourceName = foundPlaces.at(0);
+		} else {
+
+			cout << "\nWhich of the following places did you mean?\n";
+			for (int i = 0; i < n; i++) {
+
+				cout << i << " - " << foundPlaces[i] << endl;
+			}
+			cout << "Choose one of the numbers: ";
+			string tempNumber;
+			getline(cin, tempNumber);
+
+			if (!is_number(tempNumber)) {
+				cout << "Not an integer.\n" << endl;
+				return;
+			}
+
+			int number = stoi(tempNumber);
+			if (number < 0 || number > n) {
+				cout << "Not in range number.\n" << endl;
+				return;
+			}
+			destinyName = foundPlaces.at(number);
+		}
+
+	string tempNumber;
+
+	sourceID = rideShare->getIdByName(sourceName);
+	middlePoints.push_back(sourceID-1);
 
 	cout << "Insert the number of middle points: ";
 	getline(cin, tempNumber);
@@ -449,36 +520,109 @@ void findFastestRouteThroughPoints() {
 	}
 	for (int i = 0; i < numberPoints; i++) {
 
-		cout << "Insert the ID of the next node: ";
+		cout << "Insert the next place: ";
+		getline(cin, sourceName);
+		if(sourceName.size()<=2){
+			cout << "\nPlease insert a name with at least 3 characters" << endl;
+			return;
+		}
+
+
+		foundPlaces = rideShare->existsNodeName(sourceName);
+
+		int n = foundPlaces.size();
+		if (n == 0) {
+
+			cout << "\nThere is no place with the name: " << sourceName << endl;
+			return;
+		} else if (n == 1) {
+
+			cout << "\nDid you mean " << foundPlaces.at(0) << "? (Y/N)";
+			string answer;
+			getline(cin, answer);
+			if (answer != "Y" && answer != "y" )
+				return;
+			sourceName = foundPlaces.at(0);
+		} else {
+
+			cout << "\nWhich of the following places did you mean?\n";
+			for (int i = 0; i < n; i++) {
+
+				cout << i << " - " << foundPlaces.at(i) << endl;
+			}
+			cout << "Choose one of the numbers: ";
+			string tempNumber;
+			getline(cin, tempNumber);
+
+			if (!is_number(tempNumber)) {
+				cout << "Not an integer.\n" << endl;
+				return;
+			}
+
+			int number = stoi(tempNumber);
+			if (number < 0 || number > n) {
+				cout << "Not in range number.\n" << endl;
+				return;
+			}
+			destinyName = foundPlaces.at(number);
+		}
+		sourceID = rideShare->getIdByName(sourceName);
+		middlePoints.push_back(middlePointID-1);
+	}
+
+	cout << "Insert the ID of the destiny node: ";
+	getline(cin, sourceName);
+	if(sourceName.size()<=2){
+		cout << "\nPlease insert a name with at least 3 characters" << endl;
+		return;
+	}
+
+	foundPlaces = rideShare->existsNodeName(sourceName);
+
+	n = foundPlaces.size();
+	if (n == 0) {
+
+		cout << "\nThere is no place with the name: " << sourceName << endl;
+		return;
+	} else if (n == 1) {
+
+		cout << "\nDid you mean " << foundPlaces.at(0) << "? (Y/N)";
+		string answer;
+		getline(cin, answer);
+		if (answer != "Y" && answer != "y" )
+			return;
+		sourceName = foundPlaces.at(0);
+	} else {
+
+		cout << "\nWhich of the following places did you mean?\n";
+		for (int i = 0; i < n; i++) {
+
+			cout << i << " - " << foundPlaces[i] << endl;
+		}
+		cout << "Choose one of the numbers: ";
+		string tempNumber;
 		getline(cin, tempNumber);
+
 		if (!is_number(tempNumber)) {
 			cout << "Not an integer.\n" << endl;
 			return;
 		}
-		middlePointID = stoi(tempNumber);
-		if (!rideShare->existsNodeID(middlePointID)) {
-			cout << "\nThere is no Node with the ID: " << middlePointID << endl;
+
+		int number = stoi(tempNumber);
+		if (number < 0 || number > n) {
+			cout << "Not in range number.\n" << endl;
 			return;
 		}
-		middlePoints.push_back(middlePointID);
+		destinyName = foundPlaces.at(number);
 	}
 
-	cout << "Insert the ID of the destiny node: ";
-	getline(cin, tempNumber);
-	if (!is_number(tempNumber)) {
-		cout << "Not an integer.\n" << endl;
-		return;
-	}
-	destID = stoi(tempNumber);
-	if (destID == sourceID) {
-		cout << "\nThe source and destiny ID can not be the same. " << endl;
-		return;
-	}
-	if (!rideShare->existsNodeID(destID)) {
-		cout << "\nThere is no Node with the ID: " << destID << endl;
-		return;
-	}
-	middlePoints.push_back(destID);
+//	if (destID == sourceID) {
+//		cout << "\nThe source and destiny ID can not be the same. " << endl;
+//		return;
+//	}
+
+	sourceID = rideShare->getIdByName(sourceName);
+	middlePoints.push_back(destID-1);
 
 	vector<int> completePath;
 	vector<int> tempPath;
@@ -555,9 +699,12 @@ void createNewClient() {
 }
 void createNewTravel() {
 
-	int driverID, seats, startPlace, endPlace, tolerance;
+	int driverID, seats, tolerance;
 	string tempNumber;
+	string sourceName;
+	string destinyName;
 	string departureTime;
+	vector<string> foundPlaces;
 
 	cout << endl << endl;
 	cout << "-----------" << endl;
@@ -598,15 +745,15 @@ void createNewTravel() {
 		cout << "Not in the right format.\n" << endl;
 		return;
 	}
-	for(auto it = rideShare->getTravels().begin(); it != rideShare->getTravels().end(); it++){
-
-		if((*it)->getTravelDriver()->getUniqueClientID() == driverID){
-			if(rideShare->differenceBetweenTimes((*it)->getTravelDepartureTime(), time) <= 60){
-				cout << "Not possible to have 2 travels withing 60 minutes.\n" << endl;
-				return;
-			}
-		}
-	}
+//	for(auto it = rideShare->getTravels().begin(); it != rideShare->getTravels().end(); it++){
+//
+//		if((*it)->getTravelDriver()->getUniqueClientID() == driverID){
+//			if(rideShare->differenceBetweenTimes((*it)->getTravelDepartureTime(), time) <= 60){
+//				cout << "Not possible to have 2 travels withing 60 minutes.\n" << endl;
+//				return;
+//			}
+//		}
+//	}
 
 	cout << "Insert the tolerance time of the travel: (minutes)(max = 60) ";
 	getline(cin, tempNumber);
@@ -624,41 +771,127 @@ void createNewTravel() {
 		return;
 	}
 
-	cout << "Insert the ID of the departure node: ";
-	getline(cin, tempNumber);
-	if (!is_number(tempNumber)) {
-		cout << "Not an integer.\n" << endl;
-		return;
-	}
-	startPlace = stoi(tempNumber);
-	if (!rideShare->existsNodeID(startPlace)) {
-		cout << "\nThere is no Node with the ID: " << startPlace << endl;
+	cout << "Insert the name of the departure place: ";
+	getline(cin, sourceName);
+	if(sourceName.size()<=2){
+		cout << "\nPlease insert a name with at least 3 characters" << endl;
 		return;
 	}
 
-	cout << "Insert the ID of the end of travel node: ";
-	getline(cin, tempNumber);
-	if (!is_number(tempNumber)) {
-		cout << "Not an integer.\n" << endl;
+	foundPlaces = rideShare->existsNodeName(sourceName);
+
+	int n = foundPlaces.size();
+	if (n == 0) {
+
+		cout << "\nThere is no place with the name: " << sourceName << endl;
 		return;
+	} else if (n == 1) {
+
+		cout << "\nDid you mean " << foundPlaces.at(0) << "? (Y/N)";
+		string answer;
+		getline(cin, answer);
+		if (answer != "Y" && answer != "y" )
+			return;
+		sourceName = foundPlaces.at(0);
+	} else {
+
+		cout << "\nWhich of the following places did you mean?\n";
+
+		for (int i = 0; i < n; i++) {
+
+			cout << i << " - " << foundPlaces.at(i) << endl;
+		}
+
+		cout << "Choose one of the numbers: ";
+		string tempNumber;
+
+		getline(cin, tempNumber);
+
+		if (!is_number(tempNumber)) {
+			cout << "Not an integer.\n" << endl;
+			return;
+		}
+
+		int number = stoi(tempNumber);
+
+		if (number < 0 || number > n) {
+			cout << "Not in range number.\n" << endl;
+			return;
+		}
+		sourceName = foundPlaces[number];
 	}
-	endPlace = stoi(tempNumber);
-	if (!rideShare->existsNodeID(endPlace)) {
-		cout << "\nThere is no Node with the ID: " << startPlace << endl;
-		return;
-	}
-	if (endPlace == startPlace) {
-		cout << "\nThe source and destiny node ID can not be the same. "
-				<< endl;
+
+	cout << "Insert the name of the travel place: ";
+	getline(cin, destinyName);
+	if(destinyName.size()<=2){
+		cout << "\nPlease insert a name with at least 3 characters" << endl;
 		return;
 	}
 
-	int simpleTime = rideShare->getSimpleTimeRoute(startPlace, endPlace);
-	vector<int> path = rideShare->getGraph().getPath(startPlace, endPlace);
+	foundPlaces = rideShare->existsNodeName(destinyName);
+
+	n = foundPlaces.size();
+	if (n == 0) {
+
+		cout << "\nThere is no place with the name: " << destinyName << endl;
+		return;
+	} else if (n == 1) {
+
+		cout << "\nDid you mean " << foundPlaces.at(0) << "? (Y/N)";
+		string answer;
+		getline(cin, answer);
+		if (answer != "Y" && answer != "y" )
+			return;
+		destinyName = foundPlaces.at(0);
+	} else {
+
+		cout << "\nWhich of the following places did you mean?\n";
+
+		for (int i = 0; i < n; i++) {
+
+			cout << i << " - " << foundPlaces.at(i) << endl;
+		}
+
+		cout << "Choose one of the numbers: ";
+		string tempNumber;
+
+		getline(cin, tempNumber);
+
+		if (!is_number(tempNumber)) {
+			cout << "Not an integer.\n" << endl;
+			return;
+		}
+
+		int number = stoi(tempNumber);
+
+		if (number < 0 || number > n) {
+			cout << "Not in range number.\n" << endl;
+			return;
+		}
+		destinyName = foundPlaces[number];
+	}
+
+	int sourceID = rideShare->getIdByName(sourceName);
+	int destID = rideShare->getIdByName(destinyName);
+	cout << "id : " << sourceID << endl;
+	cout << "id dest : " << destID << endl;
+	cout << "course name: " << sourceName << endl;
+
+	cout << "course name: " << (*rideShare->getGraph().getVertexSet().at(sourceID+1)).getVertexName() << endl;
+
+	cout << "dest name: " << destinyName << endl;
+
+	if (sourceID == destID) {
+		cout << "\nThe source and destiny place can not be the same. " << endl;
+		return;
+	}
+
+	int simpleTime = rideShare->getSimpleTimeRoute(sourceID, destID);
+	vector<int> path = rideShare->getGraph().getPath(sourceID, destID);
 
 	Travel * newTravel = new Travel(rideShare, seats,
 			rideShare->getClientByID(driverID), time, tolerance, simpleTime,
-			startPlace, endPlace, path);
+			sourceID, destID, path);
 	rideShare->addTravel(newTravel);
 
 	cout << "\nTravel added with success!" << endl << endl;
