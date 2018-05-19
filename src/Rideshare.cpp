@@ -10,7 +10,6 @@ RideShare::RideShare() {
 }
 RideShare::RideShare(vector<Client *> clients, std::vector<Travel *> travels) {
 
-	this->allClients = clients;
 	this->allTravels = travels;
 }
 
@@ -239,10 +238,19 @@ string RideShare::showAllTravels() {
 	if (allTravels.size() == 0) {
 
 		allInfo = "There are no Travels to show.\n";
+
 	} else {
+
 		allInfo += "All Travels:\n";
-		for (auto it = this->allTravels.begin(); it != this->allTravels.end();
-				it++) {
+
+		for (auto it = allTravels.begin(); it != allTravels.end();
+			it++) {
+			vector<string> placenames;
+
+			for(auto ita = (*it)->getCurrentPath().begin() ; ita != (*it)->getCurrentPath().end();ita++){
+
+			}
+
 			allInfo += (*it)->showInfo();
 		}
 	}

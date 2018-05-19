@@ -10,12 +10,12 @@ int Travel::idTravel_provider = 0;
 Travel::Travel() {
 
 }
-Travel::Travel(RideShare * rideShare, int availableSeats, Client * driver,
+Travel::Travel(RideShare * rideshare, int availableSeats, Client * driver,
 		Time time, int tolerance, int simpleTime, int travelStartPlace,
 		int travelEndPlace, vector<int> path) :
 		uniqueTravelID(++idTravel_provider) {
 
-	this->rideshare = rideShare;
+	this->rideshare = rideshare;
 	this->availableSeats = availableSeats;
 	this->driver = driver;
 	vector<Client *> clients;
@@ -181,9 +181,9 @@ string Travel::showInfo() const {
 
 	info += to_string(this->travelDepartureTime.getMinutes()) + "\n"
 			+ "\t -Tolerance Time: " + to_string(this->toleranceTime) + "\n"
-			+ "\t -Start Point: " + this->rideshare->getNamebyId(this->travelStartPlace) + "\n"
+			+ "\t -Start Point: " + to_string(this->travelStartPlace) + "\n"
 			+ "\t -End Point: " + to_string(this->travelEndPlace) + "\n"
-			+ "\t -Available Seats: " + to_string(this->allClientsGoing.size())
+			+ "\t -Available Seats: " + to_string(this->availableSeats-this->allClientsGoing.size())
 			+ "/" + to_string(this->availableSeats) + "\n"
 			+ "\t -Clients Traveling: ";
 

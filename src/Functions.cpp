@@ -188,9 +188,10 @@ void readTravelsFile() {
 		Time time;
 		time.setHours(hour);
 		time.setMinutes(minute);
+		rideShare->getGraph().getPath(startID, endID);
 		Travel * newTravel = new Travel(rideShare, seats,
-				rideShare->getClientByID(clientID), time, tolerance, startID,
-				endID, rideShare->getSimpleTimeRoute(startID, endID),
+				rideShare->getClientByID(clientID), time, tolerance, rideShare->getSimpleTimeRoute(startID, endID), startID,
+				endID,
 				rideShare->getGraph().getPath(startID, endID));
 		rideShare->addTravel(newTravel);
 	}
