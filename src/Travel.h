@@ -48,6 +48,8 @@ public:
 	void setOriginalPath(std::vector<int> path);
 	void setCurrentPath(std::vector<int> path);
 
+	bool searchClient(std::string str);
+
 	void addClient(Client * client);
 	void addRequest(Request * request);
 	void addSource(int source);
