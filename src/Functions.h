@@ -27,12 +27,13 @@ void saveRequestsFile();
 void saveTravelsFile();
 
 void seeAllSomething(std::string str);
-void findFastestRoute();
-void findFastestRouteThroughPoints();
+void searchClientTravels(int id);
+void findFastestRoute(int searchType);
+void findFastestRouteThroughPoints(int searchType);
 void showRouteMap(std::vector<int> path);
 
 void createNewClient();
-void createNewTravel();
+void createNewTravel(int searchType);
 void createNewRequest();
 
 void deleteSomething(int number);
