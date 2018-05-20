@@ -1,7 +1,7 @@
 #ifndef SRC_TIME_H_
 #define SRC_TIME_H_
 
-#include <iostream>
+#include "Client.h"
 
 class Time {
 
