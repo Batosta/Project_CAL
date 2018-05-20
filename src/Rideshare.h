@@ -35,7 +35,7 @@ public:
 	bool existsClientID(int clientID);
 	bool existsTravelID(int travelID);
 	bool existsNodeID(int nodeID);
-	vector<std::string> existsNodeName(std::string str);
+	vector<std::string> existsNodeName(std::string str, int id);
 
 	void setClients(std::vector<Client *> clients);
 	void setTravels(std::vector<Travel *> travels);
@@ -58,6 +58,9 @@ public:
 	int getDistanceRoute(int source, int dest);
 	int getSimpleTimeRoute(int source, int dest);
 
+	void searchClientTravelsKMP(std::string);
+	void searchClientTravelEDA(std::string);
+
 	void manageTravels();
 	void clearVectors();
 
@@ -66,7 +69,7 @@ public:
 
 	bool kmpStringAlgorithm(string total, string partial);
 	void computePrefixFunction(string partial, int *pi);
-	int editDistanceAlgorithm(string pat, string txt);
+	bool editDistanceAlgorithm(string pat, string txt);
 
 private:
 
