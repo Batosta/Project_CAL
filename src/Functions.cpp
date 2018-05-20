@@ -55,8 +55,6 @@ void readNodesFile() {
 
 		getline(infoNode, nodeName, ';');
 
-		cout << "read nodes: id: " << nodeID << "name: " << nodeName << endl;
-
 		gv->addNode(nodeID, xCoordinate, yCoordinate);
 		gv->setVertexLabel(nodeID, nodeName);
 		rideShare->addNode(nodeID, xCoordinate, yCoordinate, nodeName); //colocar todos os Vertex no vertexSet do Graph
@@ -308,7 +306,33 @@ void seeAllSomething(string str) {
 	cout << output;
 }
 
-void findFastestRoute() {
+void searchClientTravels(int id) { //searchType = 0 -> kmp						searchType = 1 -> eda
+
+	string clientName;
+
+	cout << endl << endl;
+	cout << "-----------" << endl;
+	cout << "RideSharing" << endl;
+	cout << "-----------" << endl;
+	cout << endl << endl;
+	cin.clear();
+	cin.ignore(10000, '\n');
+
+	cout << "Insert the name of the client you are searching: ";
+	getline(cin, clientName);
+	if (clientName.size() <= 2) {
+		cout << "\nPlease insert a name with at least 3 characters." << endl;
+		return;
+	}
+	cout << endl << endl;
+
+	if(id == 0)
+		rideShare->searchClientTravelsKMP(clientName);
+	else
+		rideShare->searchClientTravelEDA(clientName);
+}
+
+void findFastestRoute(int id) {
 
 	string sourceName;
 	string destinyName;
@@ -330,7 +354,7 @@ void findFastestRoute() {
 		return;
 	}
 
-	foundPlaces = rideShare->existsNodeName(sourceName);
+	foundPlaces = rideShare->existsNodeName(sourceName, id);
 
 	int n = foundPlaces.size();
 	if (n == 0) {
@@ -383,7 +407,7 @@ void findFastestRoute() {
 		return;
 	}
 
-	foundPlaces = rideShare->existsNodeName(destinyName);
+	foundPlaces = rideShare->existsNodeName(destinyName, id);
 
 	n = foundPlaces.size();
 	if (n == 0) {
@@ -439,7 +463,7 @@ void findFastestRoute() {
 	vector<int> path = rideShare->getFastestRoute(sourceID, destID);
 	showRouteMap(path);
 }
-void findFastestRouteThroughPoints() {
+void findFastestRouteThroughPoints(int id) {
 
 	string sourceName;
 	string destinyName;
@@ -464,7 +488,7 @@ void findFastestRouteThroughPoints() {
 		}
 
 
-		foundPlaces = rideShare->existsNodeName(sourceName);
+		foundPlaces = rideShare->existsNodeName(sourceName, id);
 
 		int n = foundPlaces.size();
 		if (n == 0) {
@@ -529,7 +553,7 @@ void findFastestRouteThroughPoints() {
 		}
 
 
-		foundPlaces = rideShare->existsNodeName(sourceName);
+		foundPlaces = rideShare->existsNodeName(sourceName, id);
 
 		int n = foundPlaces.size();
 		if (n == 0) {
@@ -578,7 +602,7 @@ void findFastestRouteThroughPoints() {
 		return;
 	}
 
-	foundPlaces = rideShare->existsNodeName(sourceName);
+	foundPlaces = rideShare->existsNodeName(sourceName, id);
 
 	n = foundPlaces.size();
 	if (n == 0) {
@@ -698,7 +722,7 @@ void createNewClient() {
 
 	sleep(1);
 }
-void createNewTravel() {
+void createNewTravel(int id) {
 
 	int driverID, seats, tolerance;
 	string tempNumber;
@@ -779,7 +803,7 @@ void createNewTravel() {
 		return;
 	}
 
-	foundPlaces = rideShare->existsNodeName(sourceName);
+	foundPlaces = rideShare->existsNodeName(sourceName, id);
 
 	int n = foundPlaces.size();
 	if (n == 0) {
@@ -829,7 +853,7 @@ void createNewTravel() {
 		return;
 	}
 
-	foundPlaces = rideShare->existsNodeName(destinyName);
+	foundPlaces = rideShare->existsNodeName(destinyName, id);
 
 	n = foundPlaces.size();
 	if (n == 0) {
@@ -1089,7 +1113,7 @@ void manageAllTravels(){
 				continue;
 
 			//check if client is already in this travel  			necessary??
-			for(int i = 0 ; i < (*itt)->getAllClientsGoing().size() ; i++){
+			for(unsigned int i = 0 ; i < (*itt)->getAllClientsGoing().size() ; i++){
 				if((*itr)->getClient()->getUniqueClientID() == (*itt)->getAllClientsGoing().at(i)->getUniqueClientID())
 					continue;
 			}
