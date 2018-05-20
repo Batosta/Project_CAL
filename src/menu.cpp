@@ -102,22 +102,23 @@ void travelsMenu() {
 	cout << " 1 - Create new Travel" << endl;
 	cout << " 2 - Remove Travel" << endl;
 	cout << " 3 - See All Travels" << endl;
-	cout << " 4 - Create a new Request" << endl;
-	cout << " 5 - Remove Request" << endl;
-	cout << " 6 - See All Requests" << endl;
-	cout << " 7 - Manage All Travels" << endl;
-	cout << " 8 - Return" << endl;
-	cout << " 9 - Exit" << endl;
+	cout << " 4 - Search for a client on Travels" << endl;
+	cout << " 5 - Create a new Request" << endl;
+	cout << " 6 - Remove Request" << endl;
+	cout << " 7 - See All Requests" << endl;
+	cout << " 8 - Manage All Travels" << endl;
+	cout << " 9 - Return" << endl;
+	cout << " 10 - Exit" << endl;
 
 	int opcao = 0;
 	cout << endl;
 	cout << "Choose an option: ";
-	while (opcao < 1 || opcao > 9) {
+	while (opcao < 1 || opcao > 10) {
 		if (cin >> opcao) {
 
 			switch (opcao) {
 			case 1:
-				createNewTravel();
+				stringAlgorithmTypeMenu(3);
 				goBack();
 				break;
 			case 2:
@@ -129,25 +130,29 @@ void travelsMenu() {
 				goBack();
 				break;
 			case 4:
-				createNewRequest();
+				stringAlgorithmTypeMenu(4);
 				goBack();
 				break;
 			case 5:
-				deleteSomething(3);
+				createNewRequest();
 				goBack();
 				break;
 			case 6:
-				seeAllSomething("requests");
+				deleteSomething(3);
 				goBack();
 				break;
 			case 7:
-				manageAllTravels();
+				seeAllSomething("requests");
 				goBack();
 				break;
 			case 8:
-				mainMenu();
+				manageAllTravels();
+				goBack();
 				break;
 			case 9:
+				mainMenu();
+				break;
+			case 10:
 				leave();
 				break;
 			default:
@@ -185,17 +190,74 @@ void graphMenu() {
 				goBack();
 				break;
 			case 2:
-				findFastestRoute();
+				stringAlgorithmTypeMenu(1);
 				goBack();
 				break;
 			case 3:
-				findFastestRouteThroughPoints();
+				stringAlgorithmTypeMenu(2);
 				goBack();
 				break;
 			case 4:
 				mainMenu();
 				break;
 			case 5:
+				leave();
+				break;
+			default:
+				cout << "Invalid option. Please, choose another option: ";
+			}
+		} else {
+			cin.clear();
+			cin.ignore(10000, '\n');
+			cout << "Invalid option. Please, choose another option: ";
+		}
+	}
+}
+
+void stringAlgorithmTypeMenu(int id) {
+
+	cout << "-----------" << endl;
+	cout << "RideSharing" << endl;
+	cout << "-----------" << endl;
+	cout << endl;
+	cout << " 1 - String Matching" << endl;
+	cout << " 2 - Approximate String Matching" << endl;
+	cout << " 3 - Return" << endl;
+	cout << " 4 - Exit" << endl;
+
+	int opcao = 0;
+	cout << endl;
+	cout << "Choose an option: ";
+	while (opcao < 1 || opcao > 4) {
+		if (cin >> opcao) {
+
+			switch (opcao) {
+			case 1:
+				if(id == 1)
+					findFastestRoute(0);
+				else if(id == 2)
+					findFastestRouteThroughPoints(0);
+				else if(id == 3)
+					createNewTravel(0);
+				else if(id == 4)
+					searchClientTravels(0);
+				goBack();
+				break;
+			case 2:
+				if(id == 1)
+					findFastestRoute(1);
+				else if(id == 2)
+					findFastestRouteThroughPoints(1);
+				else if(id == 3)
+					createNewTravel(1);
+				else if(id == 4)
+					searchClientTravels(1);
+				goBack();
+				break;
+			case 3:
+				mainMenu();
+				break;
+			case 4:
 				leave();
 				break;
 			default:
