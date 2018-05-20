@@ -10,6 +10,7 @@ RideShare::RideShare() {
 }
 RideShare::RideShare(vector<Client *> clients, std::vector<Travel *> travels) {
 
+	this->allClients = clients;
 	this->allTravels = travels;
 }
 
@@ -113,27 +114,50 @@ bool RideShare::existsNodeID(int nodeID) {
 	return false;
 }
 
-vector<string> RideShare::existsNodeName(string str){
+vector<string> RideShare::existsNodeName(string str, int id) { //id = 0 -> kmp						id = 1 -> eda
 	vector<string> v;
 	int i = 0;
-	cout << "cona1\n";
-	for (auto it = this->graph.getVertexSet().begin();
-			it != this->graph.getVertexSet().end(); it++) {
-		cout << "cona2\n" << i;
 
-		if (i > 1) {
-			cout << "cona3 size:" << this->graph.getVertexSet().size() << endl;
-			cout << (*it)->getVertexName() << endl;
-			cout << (*it)->getInfo() << endl;
-			cout << "cona3" << endl;
-			if(kmpStringAlgorithm((*it)->getVertexName(), str)){
+	if (id == 0) {
+		for (auto it = this->graph.getVertexSet().begin();
+				it != this->graph.getVertexSet().end(); it++) {
+			cout << "cona2\n" << i;
 
-				v.push_back((*it)->getVertexName());
-				cout << "vsize" << v.size() << endl;
+			if (i > 1) {
+				cout << "cona3 size:" << this->graph.getVertexSet().size()
+						<< endl;
+				cout << (*it)->getVertexName() << endl;
+				cout << (*it)->getInfo() << endl;
+				cout << "cona3" << endl;
+				if (kmpStringAlgorithm((*it)->getVertexName(), str)) {
+
+					v.push_back((*it)->getVertexName());
+					cout << "vsize" << v.size() << endl;
+				}
 			}
+			cout << i << endl;
+			i++;
 		}
-		cout << i << endl;
-		i++;
+	} else {
+		for (auto it = this->graph.getVertexSet().begin();
+				it != this->graph.getVertexSet().end(); it++) {
+			cout << "cona2\n" << i;
+
+			if (i > 1) {
+				cout << "cona3 size:" << this->graph.getVertexSet().size()
+						<< endl;
+				cout << (*it)->getVertexName() << endl;
+				cout << (*it)->getInfo() << endl;
+				cout << "cona3" << endl;
+				if (editDistanceAlgorithm((*it)->getVertexName(), str)) {
+
+					v.push_back((*it)->getVertexName());
+					cout << "vsize" << v.size() << endl;
+				}
+			}
+			cout << i << endl;
+			i++;
+		}
 	}
 
 	return v;
@@ -162,7 +186,6 @@ void RideShare::addRequest(Request * newRequest) {
 }
 void RideShare::addNode(int ID, int x, int y, string name) {
 
-	cout << "inside addnode. id: " << ID << "name:" << name << endl;
 	this->graph.addVertex(ID, x, y, name);
 }
 void RideShare::addEdge(int originID, int destID, int direction) {
@@ -238,19 +261,10 @@ string RideShare::showAllTravels() {
 	if (allTravels.size() == 0) {
 
 		allInfo = "There are no Travels to show.\n";
-
 	} else {
-
 		allInfo += "All Travels:\n";
-
-		for (auto it = allTravels.begin(); it != allTravels.end();
-			it++) {
-			vector<string> placenames;
-
-			for(auto ita = (*it)->getCurrentPath().begin() ; ita != (*it)->getCurrentPath().end();ita++){
-
-			}
-
+		for (auto it = this->allTravels.begin(); it != this->allTravels.end();
+				it++) {
 			allInfo += (*it)->showInfo();
 		}
 	}
@@ -337,11 +351,50 @@ vector<int> RideShare::getFastestRoute(int source, int dest) {
 	return path;
 }
 
+void RideShare::searchClientTravelsKMP(string str) {
+
+	for (auto it = this->allClients.begin(); it != this->allClients.end();
+			it++) {
+
+		if (kmpStringAlgorithm((*it)->getName(), str)) { //Found a client with an acceptable name
+
+			for (auto itt = this->allTravels.begin();
+					itt != this->allTravels.end(); itt++) {
+
+
+				if ((*itt)->searchClient((*it)->getName())) {
+
+					cout << "The client " << (*it)->getName() << " is going on the travel nº " << (*itt)->getUniqueTravelID() << endl;
+				}
+			}
+		}
+	}
+}
+
+void RideShare::searchClientTravelEDA(string str){
+
+	for (auto it = this->allClients.begin(); it != this->allClients.end();
+			it++) {
+
+		if (editDistanceAlgorithm(str, (*it)->getName())) { //Found a client with an acceptable name
+
+			for (auto itt = this->allTravels.begin();
+					itt != this->allTravels.end(); itt++) {
+
+
+				if ((*itt)->searchClient((*it)->getName())) {
+
+					cout << "The client " << (*it)->getName() << " is going on the travel nº " << (*itt)->getUniqueTravelID() << endl;
+				}
+			}
+		}
+	}
+}
+
 void RideShare::clearVectors() {
 
 	vector<Client *> clients;
-	for (auto it = this->allTravels.begin(); it != this->allTravels.end();
-			it++) {
+	for (auto it = this->allTravels.begin(); it != this->allTravels.end(); it++) {
 		(*it)->setAllClientsGoing(clients);
 		(*it)->setCurrentPath((*it)->getOriginalPath());
 	}
@@ -374,7 +427,6 @@ int RideShare::differenceBetweenTimes(Time time1, Time time2) {
 
 bool RideShare::kmpStringAlgorithm(const string total,const string partial) { //Algorithm for exact string search
 
-	cout << "cona5" << endl;
 	int m = partial.length();
 	int n = total.length();
 	int pi[m];
@@ -442,7 +494,7 @@ void RideShare::computePrefixFunction(string partial, int *pi) {
 }
 
 
-int RideShare::editDistanceAlgorithm(string pat, string txt){
+bool RideShare::editDistanceAlgorithm(string pat, string txt){
 
 	int n = txt.length();
 	int m = pat.length();
@@ -475,7 +527,13 @@ int RideShare::editDistanceAlgorithm(string pat, string txt){
 		}
 	}
 
-	return d[n];
+	//return d[n];
+	float txtLength = txt.length();
+	float edalgValue = ((float)d[n]) / txtLength;
+	if(edalgValue <= 0.70)
+		return true;
+	else
+		return false;
 }
 
 #endif /* RIDESHARE_CPP_ */
