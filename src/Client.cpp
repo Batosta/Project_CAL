@@ -73,7 +73,7 @@ string Client::showInfo() const {
 
 	string info = "";
 
-	info += "Client nº " + std::to_string(this->uniqueClientID) + "\n"
+	info += string("Client nº ") + //std::to_string(this->uniqueClientID) + "\n"
 			+ "\t -Name: " + this->name + "\n" + "\t -Phone Number: "
 			+ this->phoneNumber + "\n";
 
@@ -82,4 +82,3 @@ string Client::showInfo() const {
 	return info;
 
 }
-
