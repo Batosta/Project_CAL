@@ -50,6 +50,7 @@ public:
 
 	bool searchClient(std::string str);
 
+
 	void addClient(Client * client);
 	void addRequest(Request * request);
 	void addSource(int source);

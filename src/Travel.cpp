@@ -194,7 +194,7 @@ string Travel::showInfo() const {
 
 	info += to_string(this->travelDepartureTime.getMinutes()) + "\n"
 			+ "\t -Tolerance Time: " + to_string(this->toleranceTime) + "\n"
-			//+ "\t -Start Point: " + this->rideshare->getNamebyId(this->travelStartPlace) + "\n"
+			+ "\t -Start Point: " + to_string(this->travelStartPlace) + "\n"
 			+ "\t -End Point: " + to_string(this->travelEndPlace) + "\n"
 			+ "\t -Available Seats: " + to_string(this->allClientsGoing.size())
 			+ "/" + to_string(this->availableSeats) + "\n"

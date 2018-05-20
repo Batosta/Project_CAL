@@ -253,7 +253,6 @@ bool Graph<T>::addVertex(const T &in, int xCoordinate, int yCoordinate, string n
 	if (v1 != NULL)
 		return false;
 
-	cout << "inside addvertex. id: " << in << "name:" << name << endl;
 
 	vertexSet.push_back(new Vertex<T>(in, xCoordinate, yCoordinate, name));
 
@@ -513,6 +512,7 @@ void Graph<T>::unweightedShortestPath(const T &orig) {
 	s->dist = 0;
 	queue<Vertex<T>*> q;
 	q.push(s);
+
 
 	while (!q.empty()) {
 		auto v = q.front();

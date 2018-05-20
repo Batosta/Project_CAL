@@ -121,41 +121,25 @@ vector<string> RideShare::existsNodeName(string str, int id) { //id = 0 -> kmp		
 	if (id == 0) {
 		for (auto it = this->graph.getVertexSet().begin();
 				it != this->graph.getVertexSet().end(); it++) {
-			cout << "cona2\n" << i;
 
 			if (i > 1) {
-				cout << "cona3 size:" << this->graph.getVertexSet().size()
-						<< endl;
-				cout << (*it)->getVertexName() << endl;
-				cout << (*it)->getInfo() << endl;
-				cout << "cona3" << endl;
 				if (kmpStringAlgorithm((*it)->getVertexName(), str)) {
 
 					v.push_back((*it)->getVertexName());
-					cout << "vsize" << v.size() << endl;
 				}
 			}
-			cout << i << endl;
 			i++;
 		}
 	} else {
 		for (auto it = this->graph.getVertexSet().begin();
 				it != this->graph.getVertexSet().end(); it++) {
-			cout << "cona2\n" << i;
 
 			if (i > 1) {
-				cout << "cona3 size:" << this->graph.getVertexSet().size()
-						<< endl;
-				cout << (*it)->getVertexName() << endl;
-				cout << (*it)->getInfo() << endl;
-				cout << "cona3" << endl;
-				if (editDistanceAlgorithm((*it)->getVertexName(), str)) {
+				if (editDistanceAlgorithm(str, (*it)->getVertexName())) {
 
 					v.push_back((*it)->getVertexName());
-					cout << "vsize" << v.size() << endl;
 				}
 			}
-			cout << i << endl;
 			i++;
 		}
 	}
@@ -433,8 +417,8 @@ bool RideShare::kmpStringAlgorithm(const string total,const string partial) { //
 
 	computePrefixFunction(partial, pi);
 
-	int i = 0;  // index for total[] string
-	int j = 0;  // index for partial[] string
+	int i = 0;
+	int j = 0;
 	while (i < n) {
 
 		if (tolower(partial[j]) == tolower(total[i])){ //case insensitive    o codigo ASCII das minusculas é o das maiusculas + 32
@@ -448,7 +432,6 @@ bool RideShare::kmpStringAlgorithm(const string total,const string partial) { //
 			return true;
 		}
 
-		// mismatch after j matches
 		else if (i < n && tolower(partial[j]) != tolower(total[i])) {
 			if (j != 0)
 				j = pi[j - 1];
@@ -462,28 +445,20 @@ bool RideShare::kmpStringAlgorithm(const string total,const string partial) { //
 void RideShare::computePrefixFunction(string partial, int *pi) {
 
 	int m = partial.length();
-	// length of the previous longest prefix suffix
+
 	int len = 0;
 
-	pi[0] = 0; // lps[0] is always 0
-
-	// the loop calculates lps[i] for i = 1 to M-1
+	pi[0] = 0;
 	int i = 1;
 	while (i < m) {
 		if (tolower(partial[i]) == tolower(partial[len])) {
 			len++;
 			pi[i] = len;
 			i++;
-		} else // (pat[i] != pat[len])
+		} else
 		{
-			// This is tricky. Consider the example.
-			// AAACAAAA and i = 7. The idea is similar
-			// to search step.
 			if (len != 0) {
 				len = pi[len - 1];
-
-				// Also, note that we do not increment
-				// i here
 			} else // if (len == 0)
 			{
 				pi[i] = 0;
@@ -530,7 +505,7 @@ bool RideShare::editDistanceAlgorithm(string pat, string txt){
 	//return d[n];
 	float txtLength = txt.length();
 	float edalgValue = ((float)d[n]) / txtLength;
-	if(edalgValue <= 0.70)
+	if(edalgValue <= 0.50)
 		return true;
 	else
 		return false;

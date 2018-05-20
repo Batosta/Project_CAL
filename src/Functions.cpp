@@ -459,7 +459,6 @@ void findFastestRoute(int id) {
 		return;
 	}
 
-	cout << "test xixi \n";
 	vector<int> path = rideShare->getFastestRoute(sourceID, destID);
 	showRouteMap(path);
 }

@@ -35,7 +35,7 @@ public:
 	bool existsClientID(int clientID);
 	bool existsTravelID(int travelID);
 	bool existsNodeID(int nodeID);
-	vector<std::string> existsNodeName(std::string str, int id);
+	std::vector<std::string> existsNodeName(std::string str, int id);
 
 	void setClients(std::vector<Client *> clients);
 	void setTravels(std::vector<Travel *> travels);
